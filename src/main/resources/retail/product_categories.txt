@@ -1,0 +1,11 @@
+Name|ProductCode
+Groceries|FOOD
+Furniture|FURN
+Toys|TOYS
+Medications|MEDS
+Electronics|ELEC
+Board Games|BORD
+Video Games|GAME
+Stationary|STAT
+Pet Products|PETS
+Greeting Cards|CARDS

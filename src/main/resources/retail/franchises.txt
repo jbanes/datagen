@@ -1,0 +1,21 @@
+Name|International
+Walmart|World
+Target|US
+Aeon|Japan
+MaxValu|Japan
+Safeway|US
+Kroger|US
+Macy's|US
+JCPenny|US
+Marshall Fields|US
+Elizabeth Taylor|US
+BOB's Furniture|US
+CostCo|US
+Sam's Club|US
+Aldi's|US
+Trader Joe's|US
+Walgreens|US
+CVS|US
+RiteAid|US
+Shopko|US
+Jewel|US
