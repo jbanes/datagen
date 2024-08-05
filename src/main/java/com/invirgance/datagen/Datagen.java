@@ -33,8 +33,12 @@ public class Datagen
 {
     public static void main(String[] args) throws Exception
     {
-        System.out.println("Hello World!");
+        if(args.length < 1)
+        {
+            System.err.println("Usage: java -jar datagen.jar <output directory>");
+            return;
+        }
         
-        new RetailGenerator(new File("output")).generate();
+        new RetailGenerator(new File(args[0])).generate();
     }
 }

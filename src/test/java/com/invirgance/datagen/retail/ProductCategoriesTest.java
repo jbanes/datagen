@@ -35,6 +35,8 @@ public class ProductCategoriesTest
 {
     private static void delete(File dir)
     {
+        if(!dir.exists()) return;
+        
         for(File file : dir.listFiles())
         {
             if(file.isDirectory()) delete(file);
