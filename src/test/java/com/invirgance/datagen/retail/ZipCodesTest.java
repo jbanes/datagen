@@ -58,10 +58,14 @@ public class ZipCodesTest
     public void testUSList()
     {
         ZipCodes codes = new ZipCodes(new File("target/temp/tests/retail/zipcodes.json"));
+        int index = -1;
         
         for(JSONObject zipcode : codes)
         {
-            System.out.println(zipcode);
+            assertEquals(index++, zipcode.get("id"));
+            
+            if(index == 0) index++;
+            else assertTrue((zipcode.get("Country").equals("JP") || zipcode.get("Country").equals("US")));
         }
     }
     

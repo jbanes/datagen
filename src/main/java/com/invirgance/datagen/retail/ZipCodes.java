@@ -48,7 +48,7 @@ public class ZipCodes implements Iterable<JSONObject>
 
     public ZipCodes(File file)
     {
-        this(file, getUSList(), null);
+        this(file, getUSList(), getJapanList());
     }
     
     public ZipCodes(File file, Iterable<JSONObject> usList, Iterable<JSONObject> japanList)
@@ -58,10 +58,14 @@ public class ZipCodes implements Iterable<JSONObject>
         this.japanList = japanList;
     }
     
-    
     public static Iterable<JSONObject> getUSList()
     {
         return new DelimitedInput('|').read(new ClasspathSource("/retail/us-zipcodes.txt"));
+    }
+    
+    public static Iterable<JSONObject> getJapanList()
+    {
+        return new DelimitedInput('|').read(new ClasspathSource("/retail/jp-zipcodes.txt"));
     }
     
     public void generate()
@@ -69,7 +73,8 @@ public class ZipCodes implements Iterable<JSONObject>
         JSONOutput output = new JSONOutput();
         Iterable<JSONObject> unknown = new JSONArray<>("[{\"ZipCode\": \"Unknown\", \"id\": -1}]");
         Iterable<JSONObject> us = new InsertKeyTransformer("Country", "US").transform(this.usList);
-        Iterable<JSONObject> iterable = new UnionIterable(us);
+        Iterable<JSONObject> jp = new InsertKeyTransformer("Country", "JP").transform(this.japanList);
+        Iterable<JSONObject> iterable = new UnionIterable(us, jp);
         
         iterable = new IdentityTransformer() {
             private int index = 1;
