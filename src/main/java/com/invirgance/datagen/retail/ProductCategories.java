@@ -42,9 +42,8 @@ import java.util.Random;
  *
  * @author jbanes
  */
-public class ProductCategories implements Iterable<JSONObject>
+public class ProductCategories extends AbstractGenerator
 {
-    private File file;
     private Iterable<JSONObject> list;
     private Random random;
     
@@ -91,13 +90,5 @@ public class ProductCategories implements Iterable<JSONObject>
         iterable = new UnionIterable(new JSONArray<>("[{\"Name\": \"Unknown\", \"id\": -1}]"), iterable);
         
         output.write(new FileTarget(file), iterable);
-    }
-
-    @Override
-    public Iterator<JSONObject> iterator()
-    {
-        if(!file.exists()) generate();
-        
-        return new JSONInput().read(new FileSource(file)).iterator();
     }
 }

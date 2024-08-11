@@ -40,9 +40,8 @@ import java.util.Iterator;
  *
  * @author jbanes
  */
-public class ZipCodes implements Iterable<JSONObject>
+public class ZipCodes extends AbstractGenerator
 {
-    private File file;
     private Iterable<JSONObject> usList;
     private Iterable<JSONObject> japanList;
 

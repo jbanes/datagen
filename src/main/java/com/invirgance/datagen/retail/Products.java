@@ -40,9 +40,8 @@ import java.util.Random;
  *
  * @author jbanes
  */
-public class Products implements Iterable<JSONObject>
+public class Products extends AbstractGenerator
 {
-    private File file;
     private Iterable<JSONObject> names;
     private Iterable<JSONObject> prefixes;
     private Random random;
@@ -128,13 +127,5 @@ public class Products implements Iterable<JSONObject>
         {
             throw new ConvirganceException(e);
         }
-    }
-
-    @Override
-    public Iterator<JSONObject> iterator()
-    {
-        if(!file.exists()) generate();
-        
-        return new JSONInput().read(new FileSource(file)).iterator();
     }
 }

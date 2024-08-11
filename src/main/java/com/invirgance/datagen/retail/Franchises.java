@@ -23,27 +23,23 @@ package com.invirgance.datagen.retail;
 
 import com.invirgance.convirgance.ConvirganceException;
 import com.invirgance.convirgance.input.DelimitedInput;
-import com.invirgance.convirgance.input.JSONInput;
 import com.invirgance.convirgance.json.JSONArray;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.output.JSONOutput;
 import com.invirgance.convirgance.source.ClasspathSource;
-import com.invirgance.convirgance.source.FileSource;
 import com.invirgance.convirgance.target.FileTarget;
 import com.invirgance.convirgance.transform.IdentityTransformer;
 import com.invirgance.convirgance.transform.sets.UnionIterable;
 import com.invirgance.datagen.modules.RetailGenerator;
 import java.io.File;
-import java.util.Iterator;
 import java.util.Random;
 
 /**
  *
  * @author jbanes
  */
-public class Franchises implements Iterable<JSONObject>
+public class Franchises extends AbstractGenerator
 {
-    private File file;
     private Iterable<JSONObject> list;
     private Random random;
     
@@ -103,13 +99,5 @@ public class Franchises implements Iterable<JSONObject>
         iterable = new UnionIterable(new JSONArray<>("[{\"Name\": \"Unknown\", \"id\": -1}]"), iterable);
         
         output.write(new FileTarget(file), iterable);
-    }
-
-    @Override
-    public Iterator<JSONObject> iterator()
-    {
-        if(!file.exists()) generate();
-        
-        return new JSONInput().read(new FileSource(file)).iterator();
     }
 }
