@@ -65,7 +65,7 @@ public class ZipCodesTest
             assertEquals(index++, zipcode.get("id"));
             
             if(index == 0) index++;
-            else assertTrue((zipcode.get("Country").equals("JP") || zipcode.get("Country").equals("US")));
+            else assertTrue((zipcode.get("CountryCode").equals("JP") || zipcode.get("CountryCode").equals("US")));
         }
     }
     

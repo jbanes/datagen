@@ -79,8 +79,8 @@ public class Stores extends AbstractGenerator
         Iterable<JSONObject> franchises = Context.get("franchises");
         Iterable<JSONObject> zipcodes = load(Context.get("zipcodes"));
         
-        JSONArray<JSONObject> us = load(new EqualsFilter("Country", "US").transform(zipcodes));
-        JSONArray<JSONObject> japan = load(new EqualsFilter("Country", "JP").transform(zipcodes));
+        JSONArray<JSONObject> us = load(new EqualsFilter("CountryCode", "US").transform(zipcodes));
+        JSONArray<JSONObject> japan = load(new EqualsFilter("CountryCode", "JP").transform(zipcodes));
         JSONArray<JSONObject> lookup;
         
         JSONObject store;
@@ -115,6 +115,7 @@ public class Stores extends AbstractGenerator
                     store.put("StoreNumber", String.format("%05d", index));
                     store.put("Name", zipcode.getString("LocaleName", (String)zipcode.get("CityName")) + " - Store #" + String.format("%05d", index));
                     store.put("ZipCode", zipcode.get("ZipCode"));
+                    store.put("CountryCode", zipcode.get("CountryCode"));
                     store.put("FranchiseId", franchise.get("id"));
                     store.put("FranchiseName", franchise.get("Name"));
                     

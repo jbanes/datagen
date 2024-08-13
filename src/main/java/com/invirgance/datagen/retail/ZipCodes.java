@@ -70,9 +70,9 @@ public class ZipCodes extends AbstractGenerator
     public void generate()
     {
         JSONOutput output = new JSONOutput();
-        Iterable<JSONObject> unknown = new JSONArray<>("[{\"ZipCode\": \"Unknown\", \"id\": -1}]");
-        Iterable<JSONObject> us = new InsertKeyTransformer("Country", "US").transform(this.usList);
-        Iterable<JSONObject> jp = new InsertKeyTransformer("Country", "JP").transform(this.japanList);
+        Iterable<JSONObject> unknown = new JSONArray<>("[{\"ZipCode\": \"Unknown\", \"id\": -1, \"CountryCode\": \"Unknown\"}]");
+        Iterable<JSONObject> us = new InsertKeyTransformer("CountryCode", "US").transform(this.usList);
+        Iterable<JSONObject> jp = new InsertKeyTransformer("CountryCode", "JP").transform(this.japanList);
         Iterable<JSONObject> iterable = new UnionIterable(us, jp);
         
         iterable = new IdentityTransformer() {
