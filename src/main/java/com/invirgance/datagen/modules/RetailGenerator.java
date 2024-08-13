@@ -23,10 +23,7 @@ package com.invirgance.datagen.modules;
 
 import com.invirgance.convirgance.output.JSONOutput;
 import com.invirgance.convirgance.target.FileTarget;
-import com.invirgance.datagen.retail.Franchises;
-import com.invirgance.datagen.retail.ProductCategories;
-import com.invirgance.datagen.retail.Products;
-import com.invirgance.datagen.retail.ZipCodes;
+import com.invirgance.datagen.retail.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -67,13 +64,13 @@ public class RetailGenerator implements Generator
         Context.register("productcategories", new ProductCategories(new File(temp, "productcategories.json"), random.nextLong()));
         Context.register("products", new Products(new File(temp, "products.json"), random.nextLong()));
         Context.register("zipcodes", new ZipCodes(new File(temp, "zipcodes.json")));
+        Context.register("stores", new Stores(new File(temp, "stores.json"), random.nextLong()));
         
         output.write(new FileTarget(new File(directory, "franchises.json")), Context.get("franchises"));
         output.write(new FileTarget(new File(directory, "productcategories.json")), Context.get("productcategories"));
         output.write(new FileTarget(new File(directory, "products.json")), Context.get("products"));
         output.write(new FileTarget(new File(directory, "zipcodes.json")), Context.get("zipcodes"));
+        output.write(new FileTarget(new File(directory, "stores.json")), Context.get("stores"));
     }
-    
-    
     
 }

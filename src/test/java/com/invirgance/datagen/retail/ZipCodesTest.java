@@ -55,7 +55,7 @@ public class ZipCodesTest
     }
     
     @Test
-    public void testUSList()
+    public void testList()
     {
         ZipCodes codes = new ZipCodes(new File("target/temp/tests/retail/zipcodes.json"));
         int index = -1;
