@@ -32,6 +32,7 @@ import com.invirgance.convirgance.transform.filter.NotFilter;
 import com.invirgance.convirgance.transform.sets.UnionIterable;
 import com.invirgance.datagen.modules.Context;
 import com.invirgance.datagen.modules.RetailGenerator;
+import com.invirgance.datagen.util.CachedIterable;
 import java.io.File;
 import java.util.Random;
 
@@ -63,25 +64,16 @@ public class Stores extends AbstractGenerator
         throw new IllegalArgumentException("Unrecognized country " + country);
     }
     
-    private JSONArray<JSONObject> load(Iterable<JSONObject> iterable)
-    {
-        JSONArray<JSONObject> records = new JSONArray<>();
-        
-        for(JSONObject record : iterable) records.add(record);
-        
-        return records;
-    }
-    
     @Override
     public void generate()
     {
         JSONOutput output = new JSONOutput();
         Iterable<JSONObject> franchises = Context.get("franchises");
-        Iterable<JSONObject> zipcodes = load(Context.get("zipcodes"));
+        CachedIterable zipcodes = new CachedIterable(Context.get("zipcodes"));
         
-        JSONArray<JSONObject> us = load(new EqualsFilter("CountryCode", "US").transform(zipcodes));
-        JSONArray<JSONObject> japan = load(new EqualsFilter("CountryCode", "JP").transform(zipcodes));
-        JSONArray<JSONObject> lookup;
+        CachedIterable us = zipcodes.getFiltered(new EqualsFilter("CountryCode", "US"));
+        CachedIterable japan = zipcodes.getFiltered(new EqualsFilter("CountryCode", "JP"));
+        CachedIterable lookup;
         
         JSONObject store;
         JSONObject zipcode;
