@@ -87,9 +87,9 @@ public class Products extends AbstractGenerator
         
         for(JSONObject franchise : Context.get("franchises"))
         {
-            if(franchise.get("id").equals(-1)) continue;
+            if(franchise.getInt("id") == -1) continue;
             
-            total += (Integer)franchise.get("Products");
+            total += franchise.getInt("Products");
         }
         
         return total;

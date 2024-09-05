@@ -1,11 +1,21 @@
 Name|ProductCode
-Groceries|FOOD
-Furniture|FURN
-Toys|TOYS
-Medications|MEDS
-Electronics|ELEC
+Accessories|ACCS
+Automotive|AUTO
+Beauty Products|BEUT
+Beverages|BEVG
 Board Games|BORD
-Video Games|GAME
-Stationary|STAT
-Pet Products|PETS
+Books|BOOK
+Clothing|CLTH
+Electronics|ELEC
+Footwear|FOOT
+Furniture|FURN
 Greeting Cards|CARDS
+Groceries|FOOD
+Home Appliances|APPL
+Home Decor|DECO
+Jewelry|JEWL
+Medications|MEDS
+Pet Products|PETS
+Stationary|STAT
+Toys|TOYS
+Video Games|GAME

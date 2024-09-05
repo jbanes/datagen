@@ -96,9 +96,9 @@ public class Stores extends AbstractGenerator
             
             for(var franchise : franchises)
             {
-                if(franchise.get("id").equals(-1)) continue;
+                if(franchise.getInt("id") == -1) continue;
                 
-                stores = (Integer)franchise.get("Stores");
+                stores = franchise.getInt("Stores");
                 country = getCountryCode(franchise.getString("International"));
                 
                 for(int i=0; i<stores; i++)
@@ -113,7 +113,7 @@ public class Stores extends AbstractGenerator
                     
                     store.put("id", index++);
                     store.put("StoreNumber", String.format("%05d", index));
-                    store.put("Name", zipcode.getString("LocaleName", (String)zipcode.get("CityName")) + " - Store #" + String.format("%05d", index));
+                    store.put("Name", zipcode.getString("LocaleName", zipcode.getString("CityName")) + " - Store #" + String.format("%05d", index));
                     store.put("ZipCode", zipcode.get("ZipCode"));
                     store.put("CountryCode", zipcode.get("CountryCode"));
                     store.put("FranchiseId", franchise.get("id"));

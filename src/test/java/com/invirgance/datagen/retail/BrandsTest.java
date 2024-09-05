@@ -88,7 +88,7 @@ public class BrandsTest
         
         for(JSONObject record : brands)
         {
-            if(record.get("id").equals(-1))
+            if(record.getInt("id") == -1)
             {
                 assertEquals("Unknown", record.getString("Name"));
                 continue;
@@ -98,7 +98,7 @@ public class BrandsTest
             
             count++;
             
-            assertEquals(count, (int)record.get("id"));
+            assertEquals(count, record.getInt("id"));
         }
         
         assertEquals(10000, count);
