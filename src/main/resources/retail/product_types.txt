@@ -1,4 +1,4 @@
-Category|Type|Class
+Name|Type|SubType
 Groceries|Baking|Baking Powder
 Groceries|Baking|Baking Soda
 Groceries|Baking|Flour

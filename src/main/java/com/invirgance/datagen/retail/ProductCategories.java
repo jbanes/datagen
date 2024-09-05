@@ -62,9 +62,10 @@ public class ProductCategories extends AbstractGenerator
     
     public static Iterable<JSONObject> getList()
     {
-        return new DelimitedInput('|').read(new ClasspathSource("/retail/product_categories.txt"));
+        return new DelimitedInput('|').read(new ClasspathSource("/retail/product_types.txt"));
     }
     
+    @Override
     public void generate()
     {
         JSONOutput output = new JSONOutput();
