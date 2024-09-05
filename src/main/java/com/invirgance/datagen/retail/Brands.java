@@ -30,8 +30,8 @@ import com.invirgance.convirgance.source.ClasspathSource;
 import com.invirgance.convirgance.source.Source;
 import com.invirgance.convirgance.target.FileTarget;
 import com.invirgance.datagen.modules.RetailGenerator;
+import com.invirgance.datagen.util.CachedIterable;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -72,26 +72,22 @@ public class Brands extends AbstractGenerator
         this.count = count;
     }
     
+    private static String[] getData(String path)
+    {
+        Source source = new ClasspathSource(path);
+        Iterable<JSONObject> records = new DelimitedInput(new String[]{"value"}, '|').read(source);
+        
+        return new CachedIterable(records).toStringArray("value");
+    }
+    
     public static String[] getAdjectives()
     {
-        Source source = new ClasspathSource("/retail/brand_adjectives.txt");
-        Iterable<JSONObject> records = new DelimitedInput(new String[]{"adjective"}, '|').read(source);
-        ArrayList<String> list = new ArrayList<>();
-        
-        for(JSONObject record : records) list.add(record.getString("adjective"));
-        
-        return list.toArray(String[]::new);
+        return getData("/retail/brand_adjectives.txt");
     }
     
     public static String[] getNouns()
     {
-        Source source = new ClasspathSource("/retail/brand_nouns.txt");
-        Iterable<JSONObject> records = new DelimitedInput(new String[]{"noun"}, '|').read(source);
-        ArrayList<String> list = new ArrayList<>();
-        
-        for(JSONObject record : records) list.add(record.getString("noun"));
-        
-        return list.toArray(String[]::new);
+        return getData("/retail/brand_nouns.txt");
     }
     
     public String generateName()

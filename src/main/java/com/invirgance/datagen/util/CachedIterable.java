@@ -24,6 +24,7 @@ package com.invirgance.datagen.util;
 import com.invirgance.convirgance.json.JSONArray;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.transform.filter.Filter;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -63,5 +64,20 @@ public class CachedIterable implements Iterable<JSONObject>
     public CachedIterable getFiltered(Filter filter)
     {
         return new CachedIterable(filter.transform(cache));
+    }
+    
+    public String[] toStringArray(String key)
+    {
+        ArrayList<String> list = new ArrayList<>();
+        String value;
+        
+        for(JSONObject record : this)
+        {
+            value = record.getString(key, null);
+            
+            if(value != null) list.add(value);
+        }
+        
+        return list.toArray(String[]::new);
     }
 }

@@ -23,17 +23,15 @@ package com.invirgance.datagen.retail;
 
 import com.invirgance.convirgance.ConvirganceException;
 import com.invirgance.convirgance.input.DelimitedInput;
-import com.invirgance.convirgance.input.JSONInput;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.output.JSONOutput;
 import com.invirgance.convirgance.output.OutputCursor;
 import com.invirgance.convirgance.source.ClasspathSource;
-import com.invirgance.convirgance.source.FileSource;
 import com.invirgance.convirgance.target.FileTarget;
 import com.invirgance.datagen.modules.Context;
+import com.invirgance.datagen.util.CachedIterable;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -95,6 +93,7 @@ public class Products extends AbstractGenerator
         return total;
     }
     
+    @Override
     public void generate()
     {
         final String[] names = load(this.names);
