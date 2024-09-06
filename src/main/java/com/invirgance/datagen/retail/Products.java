@@ -106,6 +106,19 @@ public class Products extends AbstractGenerator
         return selected.toArray(String[]::new);
     }
     
+    private String generateName(String[] prefixes, String[] names, JSONObject brand, JSONObject type)
+    {
+        boolean prefix = random.nextBoolean();
+        boolean branded = random.nextBoolean();
+        
+        if(branded)
+        {
+            return brand.getString("Name") + " " + type.get("SubType");
+        }
+        
+        return (prefix ? prefixes[random.nextInt(prefixes.length)] + " " : "") + names[random.nextInt(names.length)];
+    }
+    
     @Override
     public void generate()
     {
@@ -123,7 +136,6 @@ public class Products extends AbstractGenerator
         int index = 1;
         int total;
         int typeId;
-        boolean prefix;
         
         try(OutputCursor cursor = output.write(new FileTarget(file)))
         {
@@ -143,11 +155,10 @@ public class Products extends AbstractGenerator
                     for(int i=0; i<total; i++)
                     {
                         record = new JSONObject();
-                        prefix = random.nextBoolean();
                         typeId = random.nextInt(type.size());
 
                         record.put("id", index++);
-                        record.put("Name", (prefix ? prefixes[random.nextInt(prefixes.length)] + " " : "") + names[random.nextInt(names.length)] + (random.nextBoolean() ? "" : " " + type.get(typeId).get("SubType")));
+                        record.put("Name", generateName(prefixes, names, brand, type.get(typeId)));
                         record.put("Price", random.nextInt(500, 25000) / 100.0);
                         record.put("BrandId", brand.get("id"));
                         record.put("CategoryId", type.get(typeId).get("id"));
