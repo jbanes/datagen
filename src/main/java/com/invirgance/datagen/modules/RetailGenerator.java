@@ -61,7 +61,7 @@ public class RetailGenerator implements Generator
         JSONOutput output = new JSONOutput();
         
         Context.register("franchises", new Franchises(new File(temp, "franchises.json"), random.nextLong()));
-        Context.register("productcategories", new ProductCategories(new File(temp, "productcategories.json"), random.nextLong()));
+        Context.register("categories", new ProductCategories(new File(temp, "productcategories.json"), random.nextLong()));
         Context.register("brands", new Brands(new File(temp, "brands.json"), random.nextLong()));
         Context.register("products", new Products(new File(temp, "products.json"), random.nextLong()));
         Context.register("zipcodes", new ZipCodes(new File(temp, "zipcodes.json")));
@@ -69,7 +69,7 @@ public class RetailGenerator implements Generator
         
         output.write(new FileTarget(new File(directory, "franchises.json")), Context.get("franchises"));
         output.write(new FileTarget(new File(directory, "brands.json")), Context.get("brands"));
-        output.write(new FileTarget(new File(directory, "productcategories.json")), Context.get("productcategories"));
+        output.write(new FileTarget(new File(directory, "categories.json")), Context.get("categories"));
         output.write(new FileTarget(new File(directory, "products.json")), Context.get("products"));
         output.write(new FileTarget(new File(directory, "zipcodes.json")), Context.get("zipcodes"));
         output.write(new FileTarget(new File(directory, "stores.json")), Context.get("stores"));

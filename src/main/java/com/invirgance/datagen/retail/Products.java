@@ -23,11 +23,13 @@ package com.invirgance.datagen.retail;
 
 import com.invirgance.convirgance.ConvirganceException;
 import com.invirgance.convirgance.input.DelimitedInput;
+import com.invirgance.convirgance.json.JSONArray;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.output.JSONOutput;
 import com.invirgance.convirgance.output.OutputCursor;
 import com.invirgance.convirgance.source.ClasspathSource;
 import com.invirgance.convirgance.target.FileTarget;
+import com.invirgance.convirgance.transform.filter.EqualsFilter;
 import com.invirgance.datagen.modules.Context;
 import com.invirgance.datagen.util.CachedIterable;
 import java.io.File;
@@ -69,14 +71,7 @@ public class Products extends AbstractGenerator
     
     private String[] load(Iterable<JSONObject> list)
     {
-        ArrayList<String> result = new ArrayList<>();
-        
-        for(JSONObject item : list)
-        {
-            result.add(item.getString("Name"));
-        }
-        
-        return result.toArray(String[]::new);
+        return new CachedIterable(list).toStringArray("Name");
     }
     
     private int computeTotal()
@@ -93,33 +88,73 @@ public class Products extends AbstractGenerator
         return total;
     }
     
+    private String[] selectCategories(String[] categories)
+    {
+        ArrayList<String> selected = new ArrayList<>();
+        int total = random.nextInt(1, categories.length);
+        int item;
+        
+        while(selected.size() < total)
+        {
+            item = random.nextInt(1, categories.length);
+
+            if(selected.contains(categories[item])) continue;
+
+            selected.add(categories[item]);
+        }
+        
+        return selected.toArray(String[]::new);
+    }
+    
     @Override
     public void generate()
     {
-        final String[] names = load(this.names);
-        final String[] prefixes = load(this.prefixes);
+        CachedIterable types = new CachedIterable(Context.get("categories"));
+        CachedIterable type;
+        
+        String[] names = load(this.names);
+        String[] prefixes = load(this.prefixes);
+        String[] categories = new CachedIterable(Context.get("categories")).toStringArray("Name");
         
         JSONOutput output = new JSONOutput();
         JSONObject record;
+        String[] selected;
         
         int index = 1;
-        int total = computeTotal();
+        int total;
+        int typeId;
         boolean prefix;
         
         try(OutputCursor cursor = output.write(new FileTarget(file)))
         {
             cursor.write(new JSONObject("{\"Name\": \"Unknown\", \"id\": -1}"));
             
-            for(int i=0; i<total; i++)
+            for(JSONObject brand : Context.get("brands"))
             {
-                record = new JSONObject();
-                prefix = random.nextBoolean();
+                if(brand.getInt("id") < 0) continue;
                 
-                record.put("id", index++);
-                record.put("Name", (prefix ? prefixes[random.nextInt(prefixes.length)] + " " : "") + names[random.nextInt(names.length)]);
-                record.put("Price", random.nextInt(500, 25000) / 100.0);
-                
-                cursor.write(record);
+                selected = selectCategories(categories);
+
+                for(String item : selected)
+                {
+                    type = types.getFiltered(new EqualsFilter("Name", item));
+                    total = random.nextInt(1, type.size());
+                    
+                    for(int i=0; i<total; i++)
+                    {
+                        record = new JSONObject();
+                        prefix = random.nextBoolean();
+                        typeId = random.nextInt(type.size());
+
+                        record.put("id", index++);
+                        record.put("Name", (prefix ? prefixes[random.nextInt(prefixes.length)] + " " : "") + names[random.nextInt(names.length)] + (random.nextBoolean() ? "" : " " + type.get(typeId).get("SubType")));
+                        record.put("Price", random.nextInt(500, 25000) / 100.0);
+                        record.put("BrandId", brand.get("id"));
+                        record.put("CategoryId", type.get(typeId).get("id"));
+
+                        cursor.write(record);
+                    }
+                }
             }
         }
         catch(Exception e)

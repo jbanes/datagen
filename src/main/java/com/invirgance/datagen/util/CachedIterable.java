@@ -25,6 +25,7 @@ import com.invirgance.convirgance.json.JSONArray;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.transform.filter.Filter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -69,13 +70,18 @@ public class CachedIterable implements Iterable<JSONObject>
     public String[] toStringArray(String key)
     {
         ArrayList<String> list = new ArrayList<>();
+        HashMap<String,Boolean> lookup = new HashMap<>();
         String value;
         
         for(JSONObject record : this)
         {
             value = record.getString(key, null);
             
-            if(value != null) list.add(value);
+            if(value != null && !lookup.containsKey(value)) 
+            {
+                list.add(value);
+                lookup.put(value, Boolean.TRUE);
+            }
         }
         
         return list.toArray(String[]::new);

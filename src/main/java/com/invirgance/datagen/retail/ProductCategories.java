@@ -84,7 +84,7 @@ public class ProductCategories extends AbstractGenerator
             }
         }.transform(iterable);
         
-        iterable = new UnionIterable(new JSONArray<>("[{\"Name\": \"Unknown\", \"id\": -1}]"), iterable);
+        iterable = new UnionIterable(new JSONArray<>("[{\"id\": -1, \"Name\": \"Unknown\", \"Type\": \"Unknown\", \"SubType\": \"Unknown\" }]"), iterable);
         
         output.write(new FileTarget(file), iterable);
     }
