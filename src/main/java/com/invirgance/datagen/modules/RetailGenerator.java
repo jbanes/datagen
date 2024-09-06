@@ -61,7 +61,7 @@ public class RetailGenerator implements Generator
         JSONOutput output = new JSONOutput();
         
         Context.register("franchises", new Franchises(new File(temp, "franchises.json"), random.nextLong()));
-        Context.register("categories", new ProductCategories(new File(temp, "productcategories.json"), random.nextLong()));
+        Context.register("categories", new Categories(new File(temp, "productcategories.json"), random.nextLong()));
         Context.register("brands", new Brands(new File(temp, "brands.json"), random.nextLong()));
         Context.register("products", new Products(new File(temp, "products.json"), random.nextLong()));
         Context.register("zipcodes", new ZipCodes(new File(temp, "zipcodes.json")));

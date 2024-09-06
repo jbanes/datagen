@@ -57,7 +57,7 @@ public class ProductCategoriesTest
     @Test
     public void testList()
     {
-        for(JSONObject item : new ProductCategories(new File("target/temp/tests/retail/productcategories.json")))
+        for(JSONObject item : new Categories(new File("target/temp/tests/retail/productcategories.json")))
         {
             System.out.println(item);
         }

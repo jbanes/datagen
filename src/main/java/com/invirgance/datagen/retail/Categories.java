@@ -38,22 +38,22 @@ import java.util.Random;
  *
  * @author jbanes
  */
-public class ProductCategories extends AbstractGenerator
+public class Categories extends AbstractGenerator
 {
     private Iterable<JSONObject> list;
     private Random random;
     
-    public ProductCategories(File file)
+    public Categories(File file)
     {
         this(file, getList(), RetailGenerator.DEFAULT_SEED);
     }
     
-    public ProductCategories(File file, long seed)
+    public Categories(File file, long seed)
     {
         this(file, getList(), seed);
     }
     
-    public ProductCategories(File file, Iterable<JSONObject> list, long seed)
+    public Categories(File file, Iterable<JSONObject> list, long seed)
     {
         this.file = file;
         this.list = list;
