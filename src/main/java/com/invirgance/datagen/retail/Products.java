@@ -74,20 +74,6 @@ public class Products extends AbstractGenerator
         return new CachedIterable(list).toStringArray("Name");
     }
     
-    private int computeTotal()
-    {
-        int total = 0;
-        
-        for(JSONObject franchise : Context.get("franchises"))
-        {
-            if(franchise.getInt("id") == -1) continue;
-            
-            total += franchise.getInt("Products");
-        }
-        
-        return total;
-    }
-    
     private String[] selectCategories(String[] categories)
     {
         ArrayList<String> selected = new ArrayList<>();
