@@ -52,10 +52,7 @@ public class SKUs extends AbstractGenerator
     @Override
     public void generate()
     {
-        Iterable<JSONObject> franchises = Context.get("franchises");
-        CachedIterable products = new CachedIterable(Context.get("products"));
-        CachedIterable selected;
-        
+        Iterable<JSONObject> products = Context.get("products");
         JSONOutput output = new JSONOutput();
         int index = 1;
         
@@ -63,23 +60,17 @@ public class SKUs extends AbstractGenerator
         {
             cursor.write(new JSONObject("{\"id\":-1,\"Size\":\"Unknown\",\"Color\":\"Unknown\",\"ProductId\":-1},"));
             
-            for(JSONObject franchise : franchises)
+            for(JSONObject product : products)
             {
-                if(franchise.getInt("id") < 0) continue;
-                
-                selected = products.getFiltered(new SelectionFilter(franchise, random));
-                
-System.out.println(franchise.getString("Name") + ": " + selected.size()+" / "+franchise.getString("Products"));
-
-                for(JSONObject product : selected)
+                if(product.getInt("id") < 0) continue;
+if(product.getInt("id") == 4) System.out.println("Product: " + product);
+                // Computes differentiating attributes and exploode the
+                // product into SKUs
+                for(JSONObject sku : new Attributes(product, random))
                 {
-                    // Computes differentiating attributes and exploode the
-                    // product into SKUs
-                    for(JSONObject sku : new Attributes(product, random))
-                    {
-                        sku.put("id", index++);
-                        cursor.write(sku);
-                    }
+                    sku.put("id", index++);
+ if(product.getInt("id") == 4) System.out.println("Sku: " + sku);
+                    cursor.write(sku);
                 }
             }
         }
@@ -87,37 +78,6 @@ System.out.println(franchise.getString("Name") + ": " + selected.size()+" / "+fr
         {
             throw new ConvirganceException(e);
         }
-    }
-    
-    private class SelectionFilter implements Filter
-    {
-        private Random random;
-        private int total;
-        private int count;
-
-        public SelectionFilter(JSONObject franchise, Random random)
-        {
-            this.random = new WeightedRandom(random.nextLong(), 0.25);
-            this.total = franchise.getInt("Products");
-            this.count = 0;
-        }
-        
-        @Override
-        public boolean filter(JSONObject record)
-        {
-            if(record.getInt("id") < 0) return false;
-            if(count >= total) return false;
-            
-            if(random.nextBoolean())
-            {
-                count++;
-                
-                return true;
-            }
-            
-            return false;
-        }
-        
     }
     
     private class Colors
@@ -151,6 +111,15 @@ System.out.println(franchise.getString("Name") + ": " + selected.size()+" / "+fr
                     record.put("color", COLORS[i]);
                     selected.add(record);
                 }
+            }
+            
+            // Pick a single color
+            if(this.selected.isEmpty())
+            {
+                record = new JSONObject();
+                
+                record.put("color", COLORS[this.random.nextInt(COLORS.length)]);
+                selected.add(record);
             }
         }
         
