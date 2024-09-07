@@ -231,13 +231,12 @@ public class Sales extends AbstractGenerator
     private class Customers implements Iterable<JSONObject>
     {
         private static final long DAY = 1000 * 60 * 60 * 24;
-        private static final long YEAR = DAY * 365;
         
         private JSONArray<JSONObject> records;
 
         public Customers(int[] customers, int days, String receiptPrefix)
         {
-            Date base = new Date(new Date().getTime() - YEAR);
+            Date base = new Date(new Date().getTime() - (DAY * days));
             Date date;
             
             JSONObject record;
@@ -260,7 +259,7 @@ public class Sales extends AbstractGenerator
                         {
                             record = new JSONObject();
 
-                            record.put("ReceiptId", receiptPrefix + (receipt++));
+                            record.put("Receipt", receiptPrefix + (receipt++));
                             record.put("DateId", ((date.getYear() + 1900) * 10000) + ((date.getMonth() + 1) * 100) + date.getDate());
                             record.put("TimeId", (hour * 100) + minute);
 

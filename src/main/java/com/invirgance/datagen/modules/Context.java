@@ -91,6 +91,16 @@ public class Context
         return value;
     }
     
+    public static long getSetting(String key, long defautValue)
+    {
+        String value = getSettings().get(key);
+        
+        if(value == null) return defautValue;
+        if(value.startsWith("0x")) return Long.parseLong(value.substring(2), 16);
+        
+        return Long.parseLong(value);
+    }
+    
     public static void setSetting(String key, String value)
     {
         getSettings().put(key, value);

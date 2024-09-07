@@ -42,7 +42,7 @@ public class RetailGenerator implements Generator
 
     public RetailGenerator(File directory)
     {
-        this(directory, DEFAULT_SEED);
+        this(directory, Context.getSetting("seed", DEFAULT_SEED));
     }
     
     public RetailGenerator(File directory, long seed)
