@@ -1,21 +1,20 @@
-Name|ProductCode
-Accessories|ACCS
-Automotive|AUTO
-Beauty Products|BEUT
-Beverages|BEVG
-Board Games|BORD
-Books|BOOK
-Clothing|CLTH
-Electronics|ELEC
-Footwear|FOOT
-Furniture|FURN
+Name|ProductCode|Sizes|Colors
+Accessories|ACCS|true|true
+Automotive|AUTO|false|false
+Beauty Products|BEUT|true|true
+Board Games|BORD|false|false
+Books|BOOK|false|false
+Clothing|CLTH|true|true
+Electronics|ELEC|false|true
+Footwear|FOOT|true|true
+Furniture|FURN|true|true
 Greeting Cards|CARDS
-Groceries|FOOD
-Home Appliances|APPL
-Home Decor|DECO
-Jewelry|JEWL
-Medications|MEDS
-Pet Products|PETS
-Stationary|STAT
-Toys|TOYS
-Video Games|GAME
+Groceries|FOOD|false|false
+Home Appliances|APPL|false|true
+Home Decor|DECO|true|true
+Jewelry|JEWL|true|true
+Medications|MEDS|false|false
+Pet Products|PETS|true|true
+Stationary|STAT|true|true
+Toys|TOYS|false|false
+Video Games|GAME|false|false

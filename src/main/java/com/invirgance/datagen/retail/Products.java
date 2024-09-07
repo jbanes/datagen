@@ -145,7 +145,7 @@ public class Products extends AbstractGenerator
 
                         record.put("id", index++);
                         record.put("Name", generateName(prefixes, names, brand, type.get(typeId)));
-                        record.put("Price", random.nextInt(500, 25000) / 100.0);
+                        record.put("Price", random.nextInt(100, 25000) / 100.0);
                         record.put("BrandId", brand.get("id"));
                         record.put("CategoryId", type.get(typeId).get("id"));
 

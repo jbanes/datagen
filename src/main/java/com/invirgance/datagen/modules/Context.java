@@ -32,6 +32,7 @@ import java.util.Map;
 public class Context
 {
     private static ThreadLocal<Map<String,Iterable<JSONObject>>> local = new ThreadLocal<>();
+    private static ThreadLocal<Map<String,String>> settings = new ThreadLocal<>();
     
     private static Map<String,Iterable<JSONObject>> getLocal()
     {
@@ -42,6 +43,20 @@ public class Context
             map = new HashMap<>();
             
             local.set(map);
+        }
+        
+        return map;
+    }
+    
+    private static Map<String,String> getSettings()
+    {
+        Map<String,String> map = settings.get();
+        
+        if(map == null)
+        {
+            map = new HashMap<>();
+            
+            settings.set(map);
         }
         
         return map;
@@ -60,5 +75,24 @@ public class Context
     public static void reset()
     {
         local.remove();
+    }
+    
+    public static String getSetting(String key)
+    {
+        return getSettings().get(key);
+    }
+    
+    public static String getSetting(String key, String defautValue)
+    {
+        String value = getSettings().get(key);
+        
+        if(value == null) return defautValue;
+        
+        return value;
+    }
+    
+    public static void setSetting(String key, String value)
+    {
+        getSettings().put(key, value);
     }
 }

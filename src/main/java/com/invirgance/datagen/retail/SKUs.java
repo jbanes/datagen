@@ -27,9 +27,7 @@ import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.output.JSONOutput;
 import com.invirgance.convirgance.output.OutputCursor;
 import com.invirgance.convirgance.target.FileTarget;
-import com.invirgance.convirgance.transform.filter.Filter;
 import com.invirgance.datagen.modules.Context;
-import com.invirgance.datagen.util.CachedIterable;
 import com.invirgance.datagen.util.WeightedRandom;
 import java.io.File;
 import java.util.Iterator;
@@ -63,13 +61,13 @@ public class SKUs extends AbstractGenerator
             for(JSONObject product : products)
             {
                 if(product.getInt("id") < 0) continue;
-if(product.getInt("id") == 4) System.out.println("Product: " + product);
+                
                 // Computes differentiating attributes and exploode the
                 // product into SKUs
                 for(JSONObject sku : new Attributes(product, random))
                 {
                     sku.put("id", index++);
- if(product.getInt("id") == 4) System.out.println("Sku: " + sku);
+                    
                     cursor.write(sku);
                 }
             }
@@ -214,8 +212,8 @@ if(product.getInt("id") == 4) System.out.println("Product: " + product);
             JSONObject record = new JSONObject();
             
             record.put("ProductId", product.get("id"));
-            record.put("Size", "Default");
-            record.put("Color", "Default");
+            record.put("Size", "N/A");
+            record.put("Color", "N/A");
             array.add(record);
             
             if(size) array = sizes.explodeSkus(array);

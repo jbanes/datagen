@@ -19,46 +19,42 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 SOFTWARE.
  */
+package com.invirgance.datagen.util;
 
-package com.invirgance.datagen;
-
-import com.invirgance.datagen.modules.Context;
-import com.invirgance.datagen.modules.RetailGenerator;
-import java.io.File;
+import com.invirgance.convirgance.json.JSONArray;
+import com.invirgance.convirgance.json.JSONObject;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
  * @author jbanes
  */
-public class Datagen 
+public class CachedIterableTest
 {
-    public static void main(String[] args) throws Exception
+
+    @Test
+    public void testFind()
     {
-        String dir = null;
-        String[] parsed;
+        JSONArray<JSONObject> source = new JSONArray<>();
+        JSONObject record;
         
-        for(int i=0; i<args.length; i++)
+        CachedIterable cache;
+        
+        for(int i=0; i<37; i++)
         {
-            if(args[i].equals("--setting")) 
-            {
-                if(args.length-1 < i+1) break;
-                
-                parsed = args[++i].split("=");
-                
-                Context.setSetting(parsed[0], parsed[1]);
-            }
-            else 
-            {
-                dir = args[i];
-            }
+            record = new JSONObject();
+            
+            record.put("id", i+1);
+            source.add(record);
         }
         
-        if(args.length < 1 || dir == null)
-        {
-            System.err.println("Usage: java -jar datagen.jar <output directory>");
-            return;
-        }
+        cache = new CachedIterable(source);
         
-        new RetailGenerator(new File(dir)).generate();
+        for(int i=0; i<37; i++)
+        {
+            assertEquals(i+1, new CachedIterable(source).find(i+1).get("id"));
+        }
     }
+    
 }
