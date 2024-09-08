@@ -98,7 +98,7 @@ public class Brands extends AbstractGenerator
         
         try(OutputCursor cursor = output.write(new FileTarget(file)))
         {
-            cursor.write(new JSONObject("{\"Name\": \"Unknown\", \"id\": -1}"));
+            cursor.write(new JSONObject("{\"id\": -1, \"Name\": \"Unknown\"}"));
 
             for(int i=0; i<count; i++)
             {

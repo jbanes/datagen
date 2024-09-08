@@ -65,7 +65,7 @@ public class Stores extends AbstractGenerator
         
         try(OutputCursor cursor = output.write(new FileTarget(file)))
         {
-            cursor.write(new JSONObject("{\"id\": -1,\"StoreNumber\":null,\"Name\": \"Unknown\",\"StoreNumber\":null,\"ZipCode\":null,\"CountryCode\":null,\"FranchiseId\":null,\"FranchiseName\":null}"));
+            cursor.write(new JSONObject("{\"id\": -1,\"StoreNumber\":null,\"Name\": \"Unknown\",\"ZipCode\":null,\"CountryCode\":null,\"FranchiseId\":null,\"FranchiseName\":null}"));
             
             for(var franchise : franchises)
             {
