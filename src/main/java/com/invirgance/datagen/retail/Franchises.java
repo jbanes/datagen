@@ -42,26 +42,14 @@ public class Franchises extends AbstractGenerator
 {
     private Iterable<JSONObject> list;
     
-    public Franchises(File file)
+    public Franchises()
     {
-        this(file, getList());
+        this(getList());
     }
     
-    public Franchises(File file, long seed)
+    public Franchises(Iterable<JSONObject> list)
     {
-        this(file, getList(), seed);
-    }
-    
-    public Franchises(File file, Iterable<JSONObject> list)
-    {
-        this(file, list, RetailGenerator.DEFAULT_SEED);
-    }
-    
-    public Franchises(File file, Iterable<JSONObject> list, long seed)
-    {
-        this.file = file;
         this.list = list;
-        this.random = new Random(seed);
     }
     
     public static Iterable<JSONObject> getList()

@@ -45,17 +45,15 @@ public class Products extends AbstractGenerator
     private Iterable<JSONObject> names;
     private Iterable<JSONObject> prefixes;
 
-    public Products(File file, long seed)
+    public Products()
     {
-        this(file, getNames(), getPrefixes(), seed);
+        this(getNames(), getPrefixes());
     }
     
-    public Products(File file, Iterable<JSONObject> names, Iterable<JSONObject> prefixes, long seed)
+    public Products(Iterable<JSONObject> names, Iterable<JSONObject> prefixes)
     {
-        this.file = file;
         this.names = names;
         this.prefixes = prefixes;
-        this.random = new Random(seed);
     }
     
     public static Iterable<JSONObject> getNames()

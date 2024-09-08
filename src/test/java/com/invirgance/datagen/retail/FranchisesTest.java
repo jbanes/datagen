@@ -57,7 +57,9 @@ public class FranchisesTest
     @Test
     public void testList()
     {
-        Franchises franchises = new Franchises(new File("target/temp/tests/retail/franchises.json"));
+        Franchises franchises = new Franchises();
+        
+        franchises.setFile(new File("target/temp/tests/retail/franchises.json"));
         
         for(JSONObject item : franchises)
         {

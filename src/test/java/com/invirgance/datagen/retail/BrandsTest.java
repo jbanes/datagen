@@ -82,9 +82,11 @@ public class BrandsTest
     @Test
     public void testGenerate()
     {
-        Brands brands = new Brands(new File("target/temp/tests/retail/brands.json"));
+        Brands brands = new Brands();
         HashSet set = new HashSet();
         int count = 0;
+        
+        brands.setFile(new File("target/temp/tests/retail/brands.json"));
         
         for(JSONObject record : brands)
         {

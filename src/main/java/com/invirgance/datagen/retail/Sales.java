@@ -46,10 +46,8 @@ public class Sales extends AbstractGenerator
 {
     private int days;
 
-    public Sales(File file, long seed)
+    public Sales()
     {
-        this.file = file;
-        this.random = new Random(seed);
         this.days = Context.getSetting("days", 7);
     }
 

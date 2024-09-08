@@ -26,7 +26,6 @@ import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.output.JSONOutput;
 import com.invirgance.convirgance.output.OutputCursor;
 import com.invirgance.convirgance.target.FileTarget;
-import java.io.File;
 
 /**
  *
@@ -34,11 +33,6 @@ import java.io.File;
  */
 public class Times extends AbstractGenerator
 {
-    public Times(File file, long seed)
-    {
-        this.file = file;
-    }
-    
     private String zeroPad(int value)
     {
         if(value < 10) return "0" + value;

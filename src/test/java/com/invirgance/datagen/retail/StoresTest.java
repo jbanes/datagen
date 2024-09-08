@@ -57,9 +57,13 @@ public class StoresTest
     @Test
     public void testStores()
     {
-        Franchises franchises = new Franchises(new File("target/temp/tests/retail/franchises.json"));
-        ZipCodes zipcodes = new ZipCodes(new File("target/temp/tests/retail/zipcodes.json"));
-        Stores stores = new Stores(new File("target/temp/tests/retail/stores.json"));
+        Franchises franchises = new Franchises();
+        ZipCodes zipcodes = new ZipCodes();
+        Stores stores = new Stores();
+        
+        franchises.setFile(new File("target/temp/tests/retail/franchises.json"));
+        zipcodes.setFile(new File("target/temp/tests/retail/zipcodes.json"));
+        stores.setFile(new File("target/temp/tests/retail/stores.json"));
         
         Context.register("franchises", franchises);
         Context.register("zipcodes", zipcodes);

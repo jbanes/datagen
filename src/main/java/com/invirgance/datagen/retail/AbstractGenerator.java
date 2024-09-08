@@ -25,6 +25,7 @@ import com.invirgance.convirgance.input.JSONInput;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.source.FileSource;
 import com.invirgance.datagen.modules.Generator;
+import com.invirgance.datagen.modules.RetailGenerator;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -37,7 +38,7 @@ import java.util.Random;
 public abstract class AbstractGenerator implements Iterable<JSONObject>
 {
     protected File file;
-    protected Random random;
+    protected Random random = new Random(RetailGenerator.DEFAULT_SEED);
 
     public File getFile()
     {

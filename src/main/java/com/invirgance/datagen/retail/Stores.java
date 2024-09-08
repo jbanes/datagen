@@ -28,10 +28,7 @@ import com.invirgance.convirgance.output.OutputCursor;
 import com.invirgance.convirgance.target.FileTarget;
 import com.invirgance.convirgance.transform.filter.EqualsFilter;
 import com.invirgance.datagen.modules.Context;
-import com.invirgance.datagen.modules.RetailGenerator;
 import com.invirgance.datagen.util.CachedIterable;
-import java.io.File;
-import java.util.Random;
 
 /**
  *
@@ -39,17 +36,6 @@ import java.util.Random;
  */
 public class Stores extends AbstractGenerator
 {
-    public Stores(File file)
-    {
-        this(file, RetailGenerator.DEFAULT_SEED);
-    }
-    
-    public Stores(File file, long seed)
-    {
-        this.file = file;
-        this.random = new Random(seed);
-    }
-    
     private String getCountryCode(String country)
     {
         if(country.equals("US")) return "US";

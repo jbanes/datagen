@@ -60,27 +60,32 @@ public class RetailGenerator implements Generator
         File temp = Files.createTempDirectory("retailgen-").toFile();
         JSONOutput output = new JSONOutput();
         
-        Context.register("franchises", new Franchises(new File(temp, "franchises.json"), random.nextLong()));
-        Context.register("categories", new Categories(new File(temp, "categories.json"), random.nextLong()));
-        Context.register("brands", new Brands(new File(temp, "brands.json"), random.nextLong()));
-        Context.register("products", new Products(new File(temp, "products.json"), random.nextLong()));
-        Context.register("zipcodes", new ZipCodes(new File(temp, "zipcodes.json")));
-        Context.register("stores", new Stores(new File(temp, "stores.json"), random.nextLong()));
-        Context.register("skus", new SKUs(new File(temp, "skus.json"), random.nextLong()));
-        Context.register("sales", new Sales(new File(temp, "sales.json"), random.nextLong()));
-        Context.register("dates", new Dates(new File(temp, "dates.json"), random.nextLong()));
-        Context.register("times", new Times(new File(temp, "times.json"), random.nextLong()));
+        AbstractGenerator generator;
+        String[] generators = new String[] {
+            "franchises", "categories", "brands", "products", "zipcodes",
+            "stores", "skus", "sales", "dates", "times"
+        };
         
-        output.write(new FileTarget(new File(directory, "franchises.json")), Context.get("franchises"));
-        output.write(new FileTarget(new File(directory, "brands.json")), Context.get("brands"));
-        output.write(new FileTarget(new File(directory, "categories.json")), Context.get("categories"));
-        output.write(new FileTarget(new File(directory, "products.json")), Context.get("products"));
-        output.write(new FileTarget(new File(directory, "zipcodes.json")), Context.get("zipcodes"));
-        output.write(new FileTarget(new File(directory, "stores.json")), Context.get("stores"));
-        output.write(new FileTarget(new File(directory, "skus.json")), Context.get("skus"));
-        output.write(new FileTarget(new File(directory, "sales.json")), Context.get("sales"));
-        output.write(new FileTarget(new File(directory, "dates.json")), Context.get("dates"));
-        output.write(new FileTarget(new File(directory, "times.json")), Context.get("times"));
+        Context.register("franchises", new Franchises());
+        Context.register("categories", new Categories());
+        Context.register("brands", new Brands());
+        Context.register("products", new Products());
+        Context.register("zipcodes", new ZipCodes());
+        Context.register("stores", new Stores());
+        Context.register("skus", new SKUs());
+        Context.register("sales", new Sales());
+        Context.register("dates", new Dates());
+        Context.register("times", new Times());
+        
+        for(String name : generators)
+        {
+            generator = (AbstractGenerator) Context.get(name);
+            
+            generator.setFile(new File(temp, name + ".json"));
+            generator.setRandom(random.nextLong());
+            
+            output.write(new FileTarget(new File(directory, name + ".json")), Context.get(name));
+        }
     }
     
 }

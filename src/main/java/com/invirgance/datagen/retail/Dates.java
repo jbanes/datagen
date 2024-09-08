@@ -47,13 +47,11 @@ public class Dates extends AbstractGenerator
     
     private int days;
 
-    public Dates(File file, long seed)
+    public Dates()
     {
-        this.file = file;
         this.days = Context.getSetting("days", 7);
     }
     
-
     @Override
     public void generate()
     {

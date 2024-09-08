@@ -29,11 +29,8 @@ import com.invirgance.convirgance.output.OutputCursor;
 import com.invirgance.convirgance.source.ClasspathSource;
 import com.invirgance.convirgance.source.Source;
 import com.invirgance.convirgance.target.FileTarget;
-import com.invirgance.datagen.modules.RetailGenerator;
 import com.invirgance.datagen.util.CachedIterable;
-import java.io.File;
 import java.util.HashMap;
-import java.util.Random;
 
 /**
  *
@@ -47,27 +44,20 @@ public class Brands extends AbstractGenerator
     private String[] nouns;
     private int count;
     
-    public Brands(File file)
+    public Brands()
     {
-        this(file, RetailGenerator.DEFAULT_SEED);
+        this(DEFAULT_BRAND_COUNT);
     }
     
-    public Brands(File file, long seed)
+    public Brands(int count)
     {
-        this(file, seed, DEFAULT_BRAND_COUNT);
+        this(getAdjectives(), getNouns(), count);
     }
     
-    public Brands(File file, long seed, int count)
+    public Brands(String[] adjectives, String[] nouns, int count)
     {
-        this(file, getAdjectives(), getNouns(), seed, count);
-    }
-    
-    public Brands(File file, String[] adjectives, String[] nouns, long seed, int count)
-    {
-        this.file = file;
         this.adjectives = adjectives;
         this.nouns = nouns;
-        this.random = new Random(seed);
         this.count = count;
     }
     

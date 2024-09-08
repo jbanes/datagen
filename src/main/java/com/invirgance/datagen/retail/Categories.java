@@ -30,9 +30,6 @@ import com.invirgance.convirgance.source.ClasspathSource;
 import com.invirgance.convirgance.target.FileTarget;
 import com.invirgance.convirgance.transform.IdentityTransformer;
 import com.invirgance.convirgance.transform.sets.UnionIterable;
-import com.invirgance.datagen.modules.RetailGenerator;
-import java.io.File;
-import java.util.Random;
 
 /**
  *
@@ -42,21 +39,14 @@ public class Categories extends AbstractGenerator
 {
     private Iterable<JSONObject> list;
     
-    public Categories(File file)
+    public Categories()
     {
-        this(file, getList(), RetailGenerator.DEFAULT_SEED);
+        this(getList());
     }
     
-    public Categories(File file, long seed)
+    public Categories(Iterable<JSONObject> list)
     {
-        this(file, getList(), seed);
-    }
-    
-    public Categories(File file, Iterable<JSONObject> list, long seed)
-    {
-        this.file = file;
         this.list = list;
-        this.random = new Random(seed);
     }
     
     public static Iterable<JSONObject> getList()

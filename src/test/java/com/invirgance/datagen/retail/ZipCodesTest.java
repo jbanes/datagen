@@ -57,8 +57,10 @@ public class ZipCodesTest
     @Test
     public void testList()
     {
-        ZipCodes codes = new ZipCodes(new File("target/temp/tests/retail/zipcodes.json"));
+        ZipCodes codes = new ZipCodes();
         int index = -1;
+        
+        codes.setFile(new File("target/temp/tests/retail/zipcodes.json"));
         
         for(JSONObject zipcode : codes)
         {

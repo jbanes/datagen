@@ -45,14 +45,13 @@ public class ZipCodes extends AbstractGenerator
     private Iterable<JSONObject> usList;
     private Iterable<JSONObject> japanList;
 
-    public ZipCodes(File file)
+    public ZipCodes()
     {
-        this(file, getUSList(), getJapanList());
+        this(getUSList(), getJapanList());
     }
     
-    public ZipCodes(File file, Iterable<JSONObject> usList, Iterable<JSONObject> japanList)
+    public ZipCodes(Iterable<JSONObject> usList, Iterable<JSONObject> japanList)
     {
-        this.file = file;
         this.usList = usList;
         this.japanList = japanList;
     }
