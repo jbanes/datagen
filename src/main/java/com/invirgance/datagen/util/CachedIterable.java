@@ -21,7 +21,6 @@ SOFTWARE.
  */
 package com.invirgance.datagen.util;
 
-import com.invirgance.convirgance.ConvirganceException;
 import com.invirgance.convirgance.json.JSONArray;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.transform.filter.Filter;
@@ -37,6 +36,7 @@ public class CachedIterable implements Iterable<JSONObject>
 {
     private JSONArray<JSONObject> cache;
     private JSONObject[] lookup;
+    private int floor;
     
     public CachedIterable(Iterable<JSONObject> iterable)
     {
@@ -59,24 +59,6 @@ public class CachedIterable implements Iterable<JSONObject>
         return this.cache.get(index);
     }
     
-//    private JSONObject find(int offset, int id, int last)
-//    {
-//        JSONObject record = cache.get(offset);
-//        int recordId = record.getInt("id");
-//        
-//        if(recordId == id) return record;
-//        if(recordId < id && last <= id) return find(offset+1, id, recordId);
-//        if(recordId > id && last >= id) return find(offset-1, id, recordId);
-//        
-//        System.err.println("RecordId: " + recordId);
-//        System.err.println("Last: " + last);
-//        System.err.println("Offset: " + offset);
-//        System.err.println(recordId + " < " + id + " && " + last + " < " + id + " = " + (recordId < id && last < id));
-//        System.err.println(recordId + " > " + id + " && " + last + " > " + id + " = " + (recordId > id && last > id));
-//        
-//        throw new IllegalArgumentException("id " + id + " not found in cache!");
-//    }
-    
     private JSONObject find(int id, int min, int max)
     {
         int offset = ((max-min) >> 1) + min;
@@ -93,16 +75,19 @@ public class CachedIterable implements Iterable<JSONObject>
     
     public JSONObject find(int id)
     {
-        if(cache.size() > (1024 * 1024)) return find(id, 0, cache.size());
+        int size = cache.get(cache.size()-1).getInt("id") - cache.get(0).getInt("id") + 1;
+        
+        if(size > (1024 * 1024)) return find(id, 0, cache.size());
         
         if(lookup == null)
         {
-            lookup = new JSONObject[cache.get(cache.size()-1).getInt("id")+1];
-            
-            for(JSONObject record : cache) lookup[record.getInt("id")] = record;
+            lookup = new JSONObject[size+1];
+            floor = cache.get(0).getInt("id");
+
+            for(JSONObject record : cache) lookup[record.getInt("id") - floor] = record;
         }
         
-        return lookup[id];
+        return lookup[id - floor];
     }
     
     public int size()

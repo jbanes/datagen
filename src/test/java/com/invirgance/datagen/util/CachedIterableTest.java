@@ -55,6 +55,23 @@ public class CachedIterableTest
         {
             assertEquals(i+1, new CachedIterable(source).find(i+1).get("id"));
         }
+        
+        // Test non-contiguous
+        
+        for(int i=1337; i<3000; i+=3)
+        {
+            record = new JSONObject();
+            
+            record.put("id", i);
+            source.add(record);
+        }
+        
+        cache = new CachedIterable(source);
+        
+        for(int i=1337; i<3000; i+=3)
+        {
+            assertEquals(i, new CachedIterable(source).find(i).get("id"));
+        }
     }
     
 }
