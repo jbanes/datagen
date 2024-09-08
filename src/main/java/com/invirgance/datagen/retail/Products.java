@@ -122,7 +122,7 @@ public class Products extends AbstractGenerator
         
         try(OutputCursor cursor = output.write(new FileTarget(file)))
         {
-            cursor.write(new JSONObject("{\"Name\": \"Unknown\", \"id\": -1}"));
+            cursor.write(new JSONObject("{\"id\":-1,\"Name\":\"Unknown\",\"Price\":null,\"BrandId\":-1,\"CategoryId\":-1}"));
             
             for(JSONObject brand : Context.get("brands"))
             {

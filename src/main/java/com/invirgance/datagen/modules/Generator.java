@@ -21,7 +21,6 @@ SOFTWARE.
  */
 package com.invirgance.datagen.modules;
 
-import java.io.File;
 import java.io.IOException;
 
 /**

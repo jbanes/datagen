@@ -83,7 +83,7 @@ public class Franchises extends AbstractGenerator
             }
         }.transform(iterable);
         
-        iterable = new UnionIterable(new JSONArray<>("[{\"Name\": \"Unknown\", \"id\": -1}]"), iterable);
+        iterable = new UnionIterable(new JSONArray<>("[{\"id\": -1,\"Name\":\"Unknown\",\"International\":null,\"Products\":null,\"Stores\":null,\"Employees\":null}]"), iterable);
         
         output.write(new FileTarget(file), iterable);
     }

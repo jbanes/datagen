@@ -63,7 +63,7 @@ public class Dates extends AbstractGenerator
         
         try(OutputCursor cursor = output.write(new FileTarget(file)))
         {
-            cursor.write(new JSONObject("{\"id\":-1}"));
+            cursor.write(new JSONObject("{\"id\":-1,\"Year\":null,\"Month\":null,\"Day\":null,\"DayName\":null,\"MonthName\":null}"));
             
             for(int day=0; day<days; day++)
             {

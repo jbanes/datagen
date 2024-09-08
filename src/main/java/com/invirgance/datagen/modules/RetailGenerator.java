@@ -21,7 +21,10 @@ SOFTWARE.
  */
 package com.invirgance.datagen.modules;
 
+import com.invirgance.convirgance.ConvirganceException;
+import com.invirgance.convirgance.output.DelimitedOutput;
 import com.invirgance.convirgance.output.JSONOutput;
+import com.invirgance.convirgance.output.Output;
 import com.invirgance.convirgance.target.FileTarget;
 import com.invirgance.datagen.retail.*;
 import java.io.File;
@@ -58,7 +61,9 @@ public class RetailGenerator implements Generator
     {
         Random random = new Random(seed);
         File temp = Files.createTempDirectory("retailgen-").toFile();
-        JSONOutput output = new JSONOutput();
+        
+        String format = Context.getSetting("format", "csv");
+        Output output;
         
         AbstractGenerator generator;
         String[] generators = new String[] {
@@ -77,15 +82,36 @@ public class RetailGenerator implements Generator
         Context.register("dates", new Dates());
         Context.register("times", new Times());
         
+        switch(format)
+        {
+            case "csv":
+                output = new DelimitedOutput(',');
+                break;
+            
+            case "json":
+                output = new JSONOutput();
+                break;
+                
+            default:
+                throw new ConvirganceException("Unknown format: " + Context.getSetting("format"));
+        }
+        
         for(String name : generators)
         {
-            generator = (AbstractGenerator) Context.get(name);
+            generator = (AbstractGenerator)Context.get(name);
             
-            generator.setFile(new File(temp, name + ".json"));
+            generator.setFile(new File(temp, name + ".tmp"));
             generator.setRandom(random.nextLong());
-            
-            output.write(new FileTarget(new File(directory, name + ".json")), Context.get(name));
+
+            output.write(new FileTarget(new File(directory, name + "." + format)), Context.get(name));
+        }
+        
+        // Cleanup
+        for(String name : generators) 
+        {
+            generator = (AbstractGenerator)Context.get(name);
+
+            generator.getFile().delete();
         }
     }
-    
 }

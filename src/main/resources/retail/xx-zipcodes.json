@@ -1,0 +1,20 @@
+{
+    "id": -1,
+    "AreaCode": null,
+    "AreaName": "Unknown",
+    "CityName": "Unknown",
+    "CityNameKatakana": null,
+    "CountryCode": "XX",
+    "DistrictName": "Unknown",
+    "DistrictNameKatakana": null,
+    "DistrictCode": null,
+    "LocaleName": "Unknown",
+    "PostOfficeAddress": null,
+    "PostOfficeState": null,
+    "PostOfficeZip4": null,
+    "PostOfficeCity": null,
+    "PostOfficeZip": null,
+    "PrefectureName": null,
+    "PrefectureNameKatakana": null,
+    "ZipCode": null
+}

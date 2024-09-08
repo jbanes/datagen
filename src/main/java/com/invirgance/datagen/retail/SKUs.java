@@ -29,7 +29,6 @@ import com.invirgance.convirgance.output.OutputCursor;
 import com.invirgance.convirgance.target.FileTarget;
 import com.invirgance.datagen.modules.Context;
 import com.invirgance.datagen.util.WeightedRandom;
-import java.io.File;
 import java.util.Iterator;
 import java.util.Random;
 

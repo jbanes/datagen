@@ -35,6 +35,8 @@ public class Datagen
     public static void main(String[] args) throws Exception
     {
         String dir = null;
+        String format = null;
+                
         String[] parsed;
         
         for(int i=0; i<args.length; i++)
@@ -47,17 +49,28 @@ public class Datagen
                 
                 Context.setSetting(parsed[0], parsed[1]);
             }
-            else 
+            else if(dir == null)
             {
                 dir = args[i];
+            }
+            else if(format == null)
+            {
+                format = args[i];
+            }
+            else
+            {
+                dir = null;
+                break;
             }
         }
         
         if(args.length < 1 || dir == null)
         {
-            System.err.println("Usage: java -jar datagen.jar <output directory>");
+            System.err.println("Usage: java -jar datagen.jar <output directory> [csv|json]");
             return;
         }
+        
+        if(format != null) Context.setSetting("format", format);
         
         new RetailGenerator(new File(dir)).generate();
     }

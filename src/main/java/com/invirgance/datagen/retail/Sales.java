@@ -100,9 +100,7 @@ public class Sales extends AbstractGenerator
         System.out.println("Generating " + days + " days of data...");
         
         try(OutputCursor cursor = output.write(new FileTarget(file)))
-        {
-            cursor.write(new JSONObject("{\"id\":-1,\"Size\":\"Unknown\",\"Color\":\"Unknown\",\"ProductId\":-1},"));
-            
+        {            
             for(JSONObject franchise : franchises)
             {
                 if(franchise.getInt("id") < 0) continue;
