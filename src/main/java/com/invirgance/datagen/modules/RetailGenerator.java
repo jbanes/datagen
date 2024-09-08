@@ -69,6 +69,7 @@ public class RetailGenerator implements Generator
         Context.register("skus", new SKUs(new File(temp, "skus.json"), random.nextLong()));
         Context.register("sales", new Sales(new File(temp, "sales.json"), random.nextLong()));
         Context.register("dates", new Dates(new File(temp, "dates.json"), random.nextLong()));
+        Context.register("times", new Times(new File(temp, "times.json"), random.nextLong()));
         
         output.write(new FileTarget(new File(directory, "franchises.json")), Context.get("franchises"));
         output.write(new FileTarget(new File(directory, "brands.json")), Context.get("brands"));
@@ -79,6 +80,7 @@ public class RetailGenerator implements Generator
         output.write(new FileTarget(new File(directory, "skus.json")), Context.get("skus"));
         output.write(new FileTarget(new File(directory, "sales.json")), Context.get("sales"));
         output.write(new FileTarget(new File(directory, "dates.json")), Context.get("dates"));
+        output.write(new FileTarget(new File(directory, "times.json")), Context.get("times"));
     }
     
 }
