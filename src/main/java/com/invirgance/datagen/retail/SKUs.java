@@ -39,8 +39,6 @@ import java.util.Random;
  */
 public class SKUs extends AbstractGenerator
 {
-    private Random random;
-
     public SKUs(File file, long seed)
     {
         this.file = file;

@@ -44,7 +44,6 @@ import java.util.Random;
  */
 public class Sales extends AbstractGenerator
 {
-    private Random random;
     private int days;
 
     public Sales(File file, long seed)

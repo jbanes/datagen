@@ -41,7 +41,6 @@ import java.util.Random;
 public class Categories extends AbstractGenerator
 {
     private Iterable<JSONObject> list;
-    private Random random;
     
     public Categories(File file)
     {

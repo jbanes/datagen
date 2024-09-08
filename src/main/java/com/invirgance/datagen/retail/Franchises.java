@@ -41,7 +41,6 @@ import java.util.Random;
 public class Franchises extends AbstractGenerator
 {
     private Iterable<JSONObject> list;
-    private Random random;
     
     public Franchises(File file)
     {

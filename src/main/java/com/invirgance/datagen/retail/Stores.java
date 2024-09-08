@@ -22,14 +22,11 @@ SOFTWARE.
 package com.invirgance.datagen.retail;
 
 import com.invirgance.convirgance.ConvirganceException;
-import com.invirgance.convirgance.json.JSONArray;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.output.JSONOutput;
 import com.invirgance.convirgance.output.OutputCursor;
 import com.invirgance.convirgance.target.FileTarget;
 import com.invirgance.convirgance.transform.filter.EqualsFilter;
-import com.invirgance.convirgance.transform.filter.NotFilter;
-import com.invirgance.convirgance.transform.sets.UnionIterable;
 import com.invirgance.datagen.modules.Context;
 import com.invirgance.datagen.modules.RetailGenerator;
 import com.invirgance.datagen.util.CachedIterable;
@@ -42,8 +39,6 @@ import java.util.Random;
  */
 public class Stores extends AbstractGenerator
 {
-    private Random random;
-
     public Stores(File file)
     {
         this(file, RetailGenerator.DEFAULT_SEED);

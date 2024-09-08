@@ -46,7 +46,6 @@ public class Brands extends AbstractGenerator
     private String[] adjectives;
     private String[] nouns;
     private int count;
-    private Random random;
     
     public Brands(File file)
     {

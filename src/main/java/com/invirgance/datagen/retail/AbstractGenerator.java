@@ -28,6 +28,7 @@ import com.invirgance.datagen.modules.Generator;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Random;
 
 /**
  *
@@ -36,8 +37,30 @@ import java.util.Iterator;
 public abstract class AbstractGenerator implements Iterable<JSONObject>
 {
     protected File file;
+    protected Random random;
+
+    public File getFile()
+    {
+        return file;
+    }
+
+    public void setFile(File file)
+    {
+        this.file = file;
+    }
+
+    public Random getRandom()
+    {
+        return random;
+    }
+
+    public void setRandom(long seed)
+    {
+        this.random = new Random(seed);
+    }
     
     public abstract void generate();
+    
 
     @Override
     public Iterator<JSONObject> iterator()

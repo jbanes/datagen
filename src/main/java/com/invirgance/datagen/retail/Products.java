@@ -44,7 +44,6 @@ public class Products extends AbstractGenerator
 {
     private Iterable<JSONObject> names;
     private Iterable<JSONObject> prefixes;
-    private Random random;
 
     public Products(File file, long seed)
     {
