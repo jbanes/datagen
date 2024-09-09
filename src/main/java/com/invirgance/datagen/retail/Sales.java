@@ -27,11 +27,11 @@ import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.output.JSONOutput;
 import com.invirgance.convirgance.output.OutputCursor;
 import com.invirgance.convirgance.target.FileTarget;
+import com.invirgance.convirgance.transform.filter.EqualsFilter;
 import com.invirgance.convirgance.transform.filter.Filter;
 import com.invirgance.datagen.modules.Context;
 import com.invirgance.datagen.util.CachedIterable;
 import com.invirgance.datagen.util.WeightedRandom;
-import java.io.File;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,7 +48,7 @@ public class Sales extends AbstractGenerator
 
     public Sales()
     {
-        this.days = Context.getSetting("days", 7);
+        this.days = Context.getSetting("days", 365);
     }
 
     public int getDays()
@@ -60,21 +60,50 @@ public class Sales extends AbstractGenerator
     {
         this.days = days;
     }
+    
+    private int sum(int[] customers)
+    {
+        int total = 0;
+        
+        for(int count : customers)
+        {
+            total += count;
+        }
+        
+        return total;
+    }
 
     private int[] generateCustomers(int count)
     {
         int[] customers = new int[24];
+        int total;
+        int reduce;
+        
+        int twelfth = Math.max(count / 12, 24);
+        
+        count = Math.max(count, 24 * 12);
         
         // Manually tuned to simulate busy / slow periods through the day
         for(int i=0; i<8; i++) customers[i] = 0;
-        for(int i=8; i<9; i++) customers[i] = random.nextInt(count / 12 / 8);
-        for(int i=9; i<11; i++) customers[i] = random.nextInt(count / 12 / 4);
-        for(int i=11; i<2; i++) customers[i] = random.nextInt(count / 12 * 2);
-        for(int i=2; i<5; i++) customers[i] = random.nextInt(count / 12 / 2);
-        for(int i=11; i<2; i++) customers[i] = random.nextInt(count / 12 * 2);
-        for(int i=2; i<7; i++) customers[i] = random.nextInt(count / 12 * 3);
-        for(int i=7; i<20; i++) customers[i] = random.nextInt(count / 12 / 4);
+        for(int i=8; i<9; i++) customers[i] = random.nextInt(twelfth / 8);
+        for(int i=9; i<11; i++) customers[i] = random.nextInt(twelfth / 4);
+        for(int i=11; i<2; i++) customers[i] = random.nextInt(twelfth * 2);
+        for(int i=2; i<5; i++) customers[i] = random.nextInt(twelfth / 2);
+        for(int i=11; i<2; i++) customers[i] = random.nextInt(twelfth * 2);
+        for(int i=2; i<7; i++) customers[i] = random.nextInt(twelfth * 3);
+        for(int i=7; i<20; i++) customers[i] = random.nextInt(twelfth / 4);
         for(int i=20; i<customers.length; i++) customers[i] = 0;
+        
+        while((total = sum(customers)) > count)
+        {
+            reduce = Math.max(total/12, 1);
+            
+            for(int i=0; i<customers.length; i++)
+            {
+                if(customers[i] > reduce) customers[i] -= reduce;
+                else if(customers[i] > 1) customers[i]--;
+            }
+        }
         
         return customers;
     }
@@ -83,6 +112,7 @@ public class Sales extends AbstractGenerator
     public void generate()
     {
         Iterable<JSONObject> franchises = Context.get("franchises");
+        Iterable<JSONObject> stores = Context.get("stores");
         CachedIterable products = new CachedIterable(Context.get("products"));
         Iterable<JSONObject> skus = Context.get("skus");
         
@@ -90,9 +120,8 @@ public class Sales extends AbstractGenerator
         CachedIterable selectedSkus;
         
         JSONOutput output = new JSONOutput();
-        JSONObject record;
         
-        String receiptPrefix = Integer.toString(random.nextInt(1000, 10000));
+        String receiptPrefix;
         int[] customers;
         int index = 1;
         int count;
@@ -107,21 +136,29 @@ public class Sales extends AbstractGenerator
                 
                 selectedProducts = products.getFiltered(new SelectionFilter(franchise, random));
                 selectedSkus = new CachedIterable(new InFilter("ProductId", selectedProducts.toStringArray("id")).transform(skus));
-                customers = generateCustomers(selectedProducts.size() / 2);
-
+                count = index;
+                
                 System.out.print(franchise.getString("Name") + ": " + NumberFormat.getInstance().format(selectedProducts.size()) + " products / " + NumberFormat.getInstance().format(selectedSkus.size()) + " skus / ");
-
-                for(JSONObject customer : new Customers(customers, this.days, receiptPrefix))
+                    
+                // TODO: Need Store
+                for(JSONObject store : new EqualsFilter("FranchiseId", franchise.get("id")).transform(stores))
                 {
-                    for(JSONObject sale : new Sale(customer, selectedProducts, selectedSkus))
+                    customers = generateCustomers(selectedProducts.size() / 32);
+                    receiptPrefix = Integer.toString(random.nextInt(1000, 10000));
+
+                    for(JSONObject customer : new Customers(customers, this.days, receiptPrefix))
                     {
-                        sale.put("id", index++);
-                        
-                        cursor.write(sale);
+                        for(JSONObject sale : new Sale(customer, store, selectedProducts, selectedSkus))
+                        {
+                            sale.put("id", index++);
+
+                            cursor.write(sale);
+                        }
                     }
                 }
                 
-                System.out.println(NumberFormat.getInstance().format(index) + " sales");
+                System.out.print(NumberFormat.getInstance().format(franchise.getInt("Stores")) + " stores / ");
+                System.out.println(NumberFormat.getInstance().format(index - count) + " sales");
             }
         }
         catch(Exception e)
@@ -184,7 +221,7 @@ public class Sales extends AbstractGenerator
     {
         private JSONArray<JSONObject> lines = new JSONArray<>();
         
-        public Sale(JSONObject customer, CachedIterable products, CachedIterable skus)
+        public Sale(JSONObject customer, JSONObject store, CachedIterable products, CachedIterable skus)
         {
             double goal = random.nextDouble(12.0, 500.0);
             double total = 0;
@@ -205,8 +242,11 @@ public class Sales extends AbstractGenerator
                 price = (double)product.get("Price");
                 total += price * quantity;
                 
-                record.put("SkuId", sku.get("id"));
+                record.put("FranchiseId", store.get("FranchiseId"));
+                record.put("StoreId", store.get("id"));
+                record.put("BrandId", product.get("BrandId"));
                 record.put("ProductId", sku.get("ProductId"));
+                record.put("SkuId", sku.get("id"));
                 record.put("Quantity", quantity);
                 record.put("UnitPrice", price);
                 record.put("DiscountPrice", price);
@@ -252,11 +292,21 @@ public class Sales extends AbstractGenerator
 
                         for(int i=0; i<count; i++)
                         {
-                            record = new JSONObject();
+                            record = new JSONObject(true);
 
-                            record.put("Receipt", receiptPrefix + (receipt++));
+                            record.put("id", null);
+                            record.put("FranchiseId", null);
+                            record.put("StoreId", null);
+                            record.put("BrandId", null);
+                            record.put("ProductId", null);
+                            record.put("SkuId", null);
                             record.put("DateId", ((date.getYear() + 1900) * 10000) + ((date.getMonth() + 1) * 100) + date.getDate());
                             record.put("TimeId", (hour * 100) + minute);
+                            record.put("Receipt", receiptPrefix + (receipt++));
+                            record.put("Quantity", null);
+                            record.put("UnitPrice", null);
+                            record.put("DiscountPrice", null);
+                            record.put("TotalPrice", null);
 
                             records.add(record);
                         }
