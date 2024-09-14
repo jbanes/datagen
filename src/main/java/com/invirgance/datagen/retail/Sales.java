@@ -139,8 +139,7 @@ public class Sales extends AbstractGenerator
                 count = index;
                 
                 System.out.print(franchise.getString("Name") + ": " + NumberFormat.getInstance().format(selectedProducts.size()) + " products / " + NumberFormat.getInstance().format(selectedSkus.size()) + " skus / ");
-                    
-                // TODO: Need Store
+                
                 for(JSONObject store : new EqualsFilter("FranchiseId", franchise.get("id")).transform(stores))
                 {
                     customers = generateCustomers(selectedProducts.size() / 32);
@@ -237,9 +236,9 @@ public class Sales extends AbstractGenerator
                 record = new JSONObject(customer);
                 sku = skus.get(random.nextInt(skus.size()));
                 product = products.find(sku.getInt("ProductId"));
-                quantity = random.nextInt(1, 5); // TODO: This needs to be a smarter calc
+                quantity = generateQuantity(product, sku, random);
                 
-                price = (double)product.get("Price");
+                price = product.getDouble("Price");
                 total += price * quantity;
                 
                 record.put("FranchiseId", store.get("FranchiseId"));
@@ -254,6 +253,20 @@ public class Sales extends AbstractGenerator
                 
                 lines.add(record);
             }
+        }
+        
+        private int generateQuantity(JSONObject product, JSONObject sku, Random random)
+        {
+            double price = product.getDouble("Price");
+            double probability = random.nextDouble();
+            
+            // We try to create a real-world distribution of quantities. Cheaper
+            // items will tend to be bought in larger quantities. More expensive
+            // items will be bought in smaller, usually individual, quantities.
+            if(price < 5.0) return random.nextInt(1, 10);
+            else if(price < 30.0 && probability > 0.8) return random.nextInt(2, 5);
+            else if(probability > 0.98) return random.nextInt(2, 5);
+            else return 1;
         }
         
         @Override
