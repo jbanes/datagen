@@ -90,6 +90,20 @@ public class CachedIterable implements Iterable<JSONObject>
         return lookup[id - floor];
     }
     
+    public JSONObject first()
+    {
+        if(cache.size() < 1) return null;
+        
+        return cache.get(0);
+    }
+    
+    public JSONObject last()
+    {
+        if(cache.size() < 1) return null;
+        
+        return cache.get(cache.size()-1);
+    }
+    
     public int size()
     {
         return cache.size();

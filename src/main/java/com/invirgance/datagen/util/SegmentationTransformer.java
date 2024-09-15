@@ -19,63 +19,38 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 SOFTWARE.
  */
-package com.invirgance.datagen.retail;
+package com.invirgance.datagen.util;
 
-import com.invirgance.convirgance.input.BSONInput;
+import com.invirgance.convirgance.ConvirganceException;
 import com.invirgance.convirgance.json.JSONObject;
-import com.invirgance.convirgance.output.BSONOutput;
-import com.invirgance.convirgance.output.Output;
-import com.invirgance.convirgance.source.FileSource;
-import com.invirgance.datagen.modules.RetailGenerator;
-import java.io.File;
-import java.util.Iterator;
-import java.util.Random;
+import com.invirgance.convirgance.transform.IdentityTransformer;
 
 /**
  *
  * @author jbanes
  */
-public abstract class AbstractGenerator implements Iterable<JSONObject>
+public class SegmentationTransformer implements IdentityTransformer
 {
-    protected File file;
-    protected Random random = new Random(RetailGenerator.DEFAULT_SEED);
+    private String key;
+    private int start;
+    private int total;
 
-    public File getFile()
+    public SegmentationTransformer(String key)
     {
-        return file;
-    }
-
-    public void setFile(File file)
-    {
-        this.file = file;
-        
-        file.deleteOnExit(); // Important to try and keep temp files clean
-    }
-
-    public Random getRandom()
-    {
-        return random;
-    }
-
-    public void setRandom(long seed)
-    {
-        this.random = new Random(seed);
+        this.key = key;
     }
     
-    public Output getOutput()
-    {
-        return new BSONOutput();
-    }
-    
-    public abstract void generate();
-    
-
     @Override
-    public Iterator<JSONObject> iterator()
+    public JSONObject transform(JSONObject record) throws ConvirganceException
     {
-        if(!file.exists()) generate();
-        
-        return new BSONInput().read(new FileSource(file)).iterator();
+        total += record.getInt(key);
+
+        record.put("Start", start);
+        record.put("End", total);
+
+        start = total;
+
+        return record;
     }
     
 }

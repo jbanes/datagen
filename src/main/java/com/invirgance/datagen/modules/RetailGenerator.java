@@ -69,7 +69,7 @@ public class RetailGenerator implements Generator
         AbstractGenerator generator;
         String[] generators = new String[] {
             "franchises", "categories", "brands", "products", "zipcodes",
-            "stores", "skus", "sales", "dates", "times"
+            "stores", "skus", "employees", "sales", "dates", "times"
         };
         
         Context.register("franchises", new Franchises());
@@ -79,6 +79,7 @@ public class RetailGenerator implements Generator
         Context.register("zipcodes", new ZipCodes());
         Context.register("stores", new Stores());
         Context.register("skus", new SKUs());
+        Context.register("employees", new Employees());
         Context.register("sales", new Sales());
         Context.register("dates", new Dates());
         Context.register("times", new Times());
@@ -103,6 +104,8 @@ public class RetailGenerator implements Generator
         
         for(String name : generators)
         {
+            System.out.println("Generating " + name + "...");
+            
             generator = (AbstractGenerator)Context.get(name);
             
             generator.setFile(new File(temp, name + ".tmp"));
