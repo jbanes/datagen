@@ -23,7 +23,6 @@ package com.invirgance.datagen.retail;
 
 import com.invirgance.convirgance.ConvirganceException;
 import com.invirgance.convirgance.json.JSONObject;
-import com.invirgance.convirgance.output.JSONOutput;
 import com.invirgance.convirgance.output.OutputCursor;
 import com.invirgance.convirgance.target.FileTarget;
 import com.invirgance.convirgance.transform.filter.EqualsFilter;

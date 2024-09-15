@@ -22,16 +22,12 @@ SOFTWARE.
 package com.invirgance.datagen.retail;
 
 import com.invirgance.convirgance.input.BSONInput;
-import com.invirgance.convirgance.input.JSONInput;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.output.BSONOutput;
-import com.invirgance.convirgance.output.JSONOutput;
 import com.invirgance.convirgance.output.Output;
 import com.invirgance.convirgance.source.FileSource;
-import com.invirgance.datagen.modules.Generator;
 import com.invirgance.datagen.modules.RetailGenerator;
 import java.io.File;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -66,7 +62,7 @@ public abstract class AbstractGenerator implements Iterable<JSONObject>
     
     public Output getOutput()
     {
-        return new JSONOutput();
+        return new BSONOutput();
     }
     
     public abstract void generate();
@@ -77,7 +73,7 @@ public abstract class AbstractGenerator implements Iterable<JSONObject>
     {
         if(!file.exists()) generate();
         
-        return new JSONInput().read(new FileSource(file)).iterator();
+        return new BSONInput().read(new FileSource(file)).iterator();
     }
     
 }
