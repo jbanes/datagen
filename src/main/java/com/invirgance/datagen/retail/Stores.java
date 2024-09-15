@@ -61,9 +61,13 @@ public class Stores extends AbstractGenerator
         int index = 1;
         int stores;
         
+        int total;
+        int perStore;
+        int employees;
+
         try(OutputCursor cursor = getOutput().write(new FileTarget(file)))
         {
-            cursor.write(new JSONObject("{\"id\": -1,\"StoreNumber\":null,\"Name\": \"Unknown\",\"ZipCode\":null,\"CountryCode\":null,\"FranchiseId\":null,\"FranchiseName\":null}"));
+            cursor.write(new JSONObject("{\"id\": -1,\"StoreNumber\":null,\"Name\": \"Unknown\",\"ZipCode\":null,\"CountryCode\":\"XX\",\"FranchiseId\":-1,\"Employees\":null}"));
             
             for(var franchise : franchises)
             {
@@ -71,9 +75,13 @@ public class Stores extends AbstractGenerator
                 
                 stores = franchise.getInt("Stores");
                 country = getCountryCode(franchise.getString("International"));
-                
+                total = franchise.getInt("Employees");
+                perStore = (int)(total * 0.9 / stores);
+
                 for(int i=0; i<stores; i++)
                 {
+                    employees = random.nextInt((int)(perStore * 0.7), (int)(perStore * 1.3));
+
                     if(country == null) lookup = (random.nextDouble() > 0.1 ? us : japan);
                     else if(country.equals("US")) lookup = us;
                     else if(country.equals("JP")) lookup = japan;
@@ -88,7 +96,7 @@ public class Stores extends AbstractGenerator
                     store.put("ZipCode", zipcode.get("ZipCode"));
                     store.put("CountryCode", zipcode.get("CountryCode"));
                     store.put("FranchiseId", franchise.get("id"));
-                    store.put("FranchiseName", franchise.get("Name"));
+                    store.put("Employees", employees);
                     
                     cursor.write(store);
                 }
