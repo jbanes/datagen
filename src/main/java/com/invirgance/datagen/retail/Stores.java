@@ -48,7 +48,6 @@ public class Stores extends AbstractGenerator
     @Override
     public void generate()
     {
-        JSONOutput output = new JSONOutput();
         Iterable<JSONObject> franchises = Context.get("franchises");
         CachedIterable zipcodes = new CachedIterable(Context.get("zipcodes"));
         
@@ -63,7 +62,7 @@ public class Stores extends AbstractGenerator
         int index = 1;
         int stores;
         
-        try(OutputCursor cursor = output.write(new FileTarget(file)))
+        try(OutputCursor cursor = getOutput().write(new FileTarget(file)))
         {
             cursor.write(new JSONObject("{\"id\": -1,\"StoreNumber\":null,\"Name\": \"Unknown\",\"ZipCode\":null,\"CountryCode\":null,\"FranchiseId\":null,\"FranchiseName\":null}"));
             

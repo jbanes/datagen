@@ -42,10 +42,9 @@ public class SKUs extends AbstractGenerator
     public void generate()
     {
         Iterable<JSONObject> products = Context.get("products");
-        JSONOutput output = new JSONOutput();
         int index = 1;
         
-        try(OutputCursor cursor = output.write(new FileTarget(file)))
+        try(OutputCursor cursor = getOutput().write(new FileTarget(file)))
         {
             cursor.write(new JSONObject("{\"id\":-1,\"Size\":\"Unknown\",\"Color\":\"Unknown\",\"ProductId\":-1},"));
             

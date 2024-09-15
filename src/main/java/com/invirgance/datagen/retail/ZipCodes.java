@@ -68,7 +68,6 @@ public class ZipCodes extends AbstractGenerator
     
     public void generate()
     {
-        JSONOutput output = new JSONOutput();
         Iterable<JSONObject> unknown = new JSONInput().read(new ClasspathSource("/retail/xx-zipcodes.json"));
         Iterable<JSONObject> us = new InsertKeyTransformer("CountryCode", "US").transform(this.usList);
         Iterable<JSONObject> jp = new InsertKeyTransformer("CountryCode", "JP").transform(this.japanList);
@@ -88,15 +87,7 @@ public class ZipCodes extends AbstractGenerator
         
         iterable = new UnionIterable(unknown, iterable);
         
-        output.write(new FileTarget(file), iterable);
-    }
-    
-    @Override
-    public Iterator<JSONObject> iterator()
-    {
-        if(!file.exists()) generate();
-        
-        return new JSONInput().read(new FileSource(file)).iterator();
+        getOutput().write(new FileTarget(file), iterable);
     }
     
 }

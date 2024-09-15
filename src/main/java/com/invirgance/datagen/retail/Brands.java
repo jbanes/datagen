@@ -90,13 +90,11 @@ public class Brands extends AbstractGenerator
     @Override
     public void generate()
     {
-        JSONOutput output = new JSONOutput();
         HashMap<String,Boolean> lookup = new HashMap<>();
-        
         JSONObject record;
         String name;
         
-        try(OutputCursor cursor = output.write(new FileTarget(file)))
+        try(OutputCursor cursor = getOutput().write(new FileTarget(file)))
         {
             cursor.write(new JSONObject("{\"id\": -1, \"Name\": \"Unknown\"}"));
 

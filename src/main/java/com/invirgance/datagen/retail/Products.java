@@ -112,7 +112,6 @@ public class Products extends AbstractGenerator
         String[] prefixes = load(this.prefixes);
         String[] categories = new CachedIterable(Context.get("categories")).toStringArray("Name");
         
-        JSONOutput output = new JSONOutput();
         JSONObject record;
         String[] selected;
         
@@ -120,7 +119,7 @@ public class Products extends AbstractGenerator
         int total;
         int typeId;
         
-        try(OutputCursor cursor = output.write(new FileTarget(file)))
+        try(OutputCursor cursor = getOutput().write(new FileTarget(file)))
         {
             cursor.write(new JSONObject("{\"id\":-1,\"Name\":\"Unknown\",\"Price\":null,\"BrandId\":-1,\"CategoryId\":-1}"));
             

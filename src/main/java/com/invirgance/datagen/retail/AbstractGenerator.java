@@ -21,8 +21,12 @@ SOFTWARE.
  */
 package com.invirgance.datagen.retail;
 
+import com.invirgance.convirgance.input.BSONInput;
 import com.invirgance.convirgance.input.JSONInput;
 import com.invirgance.convirgance.json.JSONObject;
+import com.invirgance.convirgance.output.BSONOutput;
+import com.invirgance.convirgance.output.JSONOutput;
+import com.invirgance.convirgance.output.Output;
 import com.invirgance.convirgance.source.FileSource;
 import com.invirgance.datagen.modules.Generator;
 import com.invirgance.datagen.modules.RetailGenerator;
@@ -58,6 +62,11 @@ public abstract class AbstractGenerator implements Iterable<JSONObject>
     public void setRandom(long seed)
     {
         this.random = new Random(seed);
+    }
+    
+    public Output getOutput()
+    {
+        return new JSONOutput();
     }
     
     public abstract void generate();

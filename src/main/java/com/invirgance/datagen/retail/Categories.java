@@ -57,7 +57,6 @@ public class Categories extends AbstractGenerator
     @Override
     public void generate()
     {
-        JSONOutput output = new JSONOutput();
         Iterable<JSONObject> iterable = this.list;
         
         iterable = new IdentityTransformer() {
@@ -75,6 +74,6 @@ public class Categories extends AbstractGenerator
         
         iterable = new UnionIterable(new JSONArray<>("[{\"id\": -1, \"Name\": \"Unknown\", \"Type\": \"Unknown\", \"SubType\": \"Unknown\" }]"), iterable);
         
-        output.write(new FileTarget(file), iterable);
+        getOutput().write(new FileTarget(file), iterable);
     }
 }

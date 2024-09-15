@@ -58,10 +58,9 @@ public class Dates extends AbstractGenerator
         Date base = new Date(new Date().getTime() - (DAY * days));
         Date date;
         
-        JSONOutput output = new JSONOutput();
         JSONObject record;
         
-        try(OutputCursor cursor = output.write(new FileTarget(file)))
+        try(OutputCursor cursor = getOutput().write(new FileTarget(file)))
         {
             cursor.write(new JSONObject("{\"id\":-1,\"Year\":null,\"Month\":null,\"Day\":null,\"DayName\":null,\"MonthName\":null}"));
             

@@ -43,10 +43,9 @@ public class Times extends AbstractGenerator
     @Override
     public void generate()
     {
-        JSONOutput output = new JSONOutput();
         JSONObject record;
         
-        try(OutputCursor cursor = output.write(new FileTarget(file)))
+        try(OutputCursor cursor = getOutput().write(new FileTarget(file)))
         {
             cursor.write(new JSONObject("{\"id\":-1,\"Hour\":null,\"Minute\":null,\"TwelveHour\":null,\"TwentyFourHour\":null}"));
             

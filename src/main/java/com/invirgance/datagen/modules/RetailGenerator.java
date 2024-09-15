@@ -22,6 +22,7 @@ SOFTWARE.
 package com.invirgance.datagen.modules;
 
 import com.invirgance.convirgance.ConvirganceException;
+import com.invirgance.convirgance.output.BSONOutput;
 import com.invirgance.convirgance.output.DelimitedOutput;
 import com.invirgance.convirgance.output.JSONOutput;
 import com.invirgance.convirgance.output.Output;
@@ -90,6 +91,10 @@ public class RetailGenerator implements Generator
             
             case "json":
                 output = new JSONOutput();
+                break;
+            
+            case "bson":
+                output = new BSONOutput();
                 break;
                 
             default:

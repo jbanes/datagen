@@ -22,10 +22,14 @@ SOFTWARE.
 package com.invirgance.datagen.retail;
 
 import com.invirgance.convirgance.ConvirganceException;
+import com.invirgance.convirgance.input.BSONInput;
+import com.invirgance.convirgance.input.JSONInput;
 import com.invirgance.convirgance.json.JSONArray;
 import com.invirgance.convirgance.json.JSONObject;
+import com.invirgance.convirgance.output.BSONOutput;
 import com.invirgance.convirgance.output.JSONOutput;
 import com.invirgance.convirgance.output.OutputCursor;
+import com.invirgance.convirgance.source.FileSource;
 import com.invirgance.convirgance.target.FileTarget;
 import com.invirgance.convirgance.transform.filter.EqualsFilter;
 import com.invirgance.convirgance.transform.filter.Filter;
@@ -119,8 +123,6 @@ public class Sales extends AbstractGenerator
         CachedIterable selectedProducts;
         CachedIterable selectedSkus;
         
-        JSONOutput output = new JSONOutput();
-        
         String receiptPrefix;
         int[] customers;
         int index = 1;
@@ -128,7 +130,7 @@ public class Sales extends AbstractGenerator
         
         System.out.println("Generating " + days + " days of data...");
         
-        try(OutputCursor cursor = output.write(new FileTarget(file)))
+        try(OutputCursor cursor = getOutput().write(new FileTarget(file)))
         {            
             for(JSONObject franchise : franchises)
             {

@@ -30,9 +30,8 @@ import com.invirgance.convirgance.source.ClasspathSource;
 import com.invirgance.convirgance.target.FileTarget;
 import com.invirgance.convirgance.transform.IdentityTransformer;
 import com.invirgance.convirgance.transform.sets.UnionIterable;
-import com.invirgance.datagen.modules.RetailGenerator;
-import java.io.File;
-import java.util.Random;
+import com.invirgance.datagen.modules.Context;
+import com.invirgance.datagen.util.CachedIterable;
 
 /**
  *
@@ -49,7 +48,22 @@ public class Franchises extends AbstractGenerator
     
     public Franchises(Iterable<JSONObject> list)
     {
+        int limit = Context.getSetting("franchises", 0);
+        JSONArray<JSONObject> cache;
+        
         this.list = list;
+        
+        if(limit > 0)
+        {
+            cache = new JSONArray<>();
+            
+            for(JSONObject record : list)
+            {
+                if(cache.size() < limit) cache.add(record);
+            }
+            
+            this.list = cache;
+        }
     }
     
     public static Iterable<JSONObject> getList()
@@ -59,7 +73,6 @@ public class Franchises extends AbstractGenerator
     
     public void generate()
     {
-        JSONOutput output = new JSONOutput();
         Iterable<JSONObject> iterable = this.list;
         
         // Generate employees, stores, and products
@@ -85,6 +98,6 @@ public class Franchises extends AbstractGenerator
         
         iterable = new UnionIterable(new JSONArray<>("[{\"id\": -1,\"Name\":\"Unknown\",\"International\":null,\"Products\":null,\"Stores\":null,\"Employees\":null}]"), iterable);
         
-        output.write(new FileTarget(file), iterable);
+        getOutput().write(new FileTarget(file), iterable);
     }
 }
