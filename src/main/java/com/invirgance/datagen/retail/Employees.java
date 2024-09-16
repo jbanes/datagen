@@ -89,7 +89,7 @@ public class Employees extends AbstractGenerator
         CachedIterable name;
         JSONObject record;
         
-        Random male = new WeightedRandom(getRandom().nextLong(), 0.511); // Population is ~51.1% female
+        Random male = new WeightedRandom(getRandom().nextLong(), 0.489); // Population is ~51.1% female
         Random segmentation = new Random(getRandom().nextLong());
         Random duplicate = new WeightedRandom(getRandom().nextLong(), 0.05); // Allow 5% of duplicate names
         

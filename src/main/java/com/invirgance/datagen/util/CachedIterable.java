@@ -38,8 +38,16 @@ public class CachedIterable implements Iterable<JSONObject>
     private JSONObject[] lookup;
     private int floor;
     
+    private HashMap<String,JSONArray<JSONObject>[]> groups;
+    
     public CachedIterable(Iterable<JSONObject> iterable)
     {
+        if(iterable instanceof JSONArray)
+        {
+            this.cache = (JSONArray<JSONObject>)iterable;
+            return;
+        }
+        
         cache = new JSONArray<>();
         
         for(JSONObject record : iterable)
@@ -112,6 +120,34 @@ public class CachedIterable implements Iterable<JSONObject>
     public CachedIterable getFiltered(Filter filter)
     {
         return new CachedIterable(filter.transform(cache));
+    }
+    
+    public CachedIterable getGroup(String key, int value)
+    {
+        JSONArray<JSONObject>[] lookup;
+        int id;
+        
+        if(groups == null) groups = new HashMap<>();
+        
+        if(!groups.containsKey(key))
+        {
+            lookup = new JSONArray[last().getInt(key)+1];
+            
+            groups.put(key, lookup);
+            
+            for(JSONObject record : this)
+            {
+                id = record.getInt(key);
+                
+                if(lookup[id] == null) lookup[id] = new JSONArray<>();
+                
+                lookup[id].add(record);
+            }
+        }
+        
+        lookup = groups.get(key);
+        
+        return new CachedIterable(lookup[value]);
     }
     
     public String[] toStringArray(String key)

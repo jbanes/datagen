@@ -22,17 +22,13 @@ SOFTWARE.
 package com.invirgance.datagen.retail;
 
 import com.invirgance.convirgance.ConvirganceException;
-import com.invirgance.convirgance.input.BSONInput;
-import com.invirgance.convirgance.input.JSONInput;
 import com.invirgance.convirgance.json.JSONArray;
 import com.invirgance.convirgance.json.JSONObject;
-import com.invirgance.convirgance.output.BSONOutput;
-import com.invirgance.convirgance.output.JSONOutput;
 import com.invirgance.convirgance.output.OutputCursor;
-import com.invirgance.convirgance.source.FileSource;
 import com.invirgance.convirgance.target.FileTarget;
 import com.invirgance.convirgance.transform.filter.EqualsFilter;
 import com.invirgance.convirgance.transform.filter.Filter;
+import com.invirgance.convirgance.transform.filter.NotFilter;
 import com.invirgance.datagen.modules.Context;
 import com.invirgance.datagen.util.CachedIterable;
 import com.invirgance.datagen.util.WeightedRandom;
@@ -49,10 +45,21 @@ import java.util.Random;
 public class Sales extends AbstractGenerator
 {
     private int days;
+    private CachedIterable employees;
 
     public Sales()
     {
         this.days = Context.getSetting("days", 365);
+    }
+    
+    
+    private static CachedIterable getEmployees()
+    {
+        Iterable<JSONObject> iterable = Context.get("employees");
+
+        iterable = new NotFilter(new EqualsFilter("id", -1)).transform(iterable);
+
+        return new CachedIterable(iterable);
     }
 
     public int getDays()
@@ -117,6 +124,7 @@ public class Sales extends AbstractGenerator
     {
         Iterable<JSONObject> franchises = Context.get("franchises");
         Iterable<JSONObject> stores = Context.get("stores");
+        CachedIterable employees = getEmployees();
         CachedIterable products = new CachedIterable(Context.get("products"));
         Iterable<JSONObject> skus = Context.get("skus");
         
@@ -127,6 +135,12 @@ public class Sales extends AbstractGenerator
         int[] customers;
         int index = 1;
         int count;
+        
+        String storeText = "";
+        long lastUpdate = 0;
+        int storeCount;
+        
+        Scheduling scheduling;
         
         System.out.println("Generating " + days + " days of data...");
         
@@ -139,15 +153,24 @@ public class Sales extends AbstractGenerator
                 selectedProducts = products.getFiltered(new SelectionFilter(franchise, random));
                 selectedSkus = new CachedIterable(new InFilter("ProductId", selectedProducts.toStringArray("id")).transform(skus));
                 count = index;
+                storeCount = 0;
                 
                 System.out.print(franchise.getString("Name") + ": " + NumberFormat.getInstance().format(selectedProducts.size()) + " products / " + NumberFormat.getInstance().format(selectedSkus.size()) + " skus / ");
                 
                 for(JSONObject store : new EqualsFilter("FranchiseId", franchise.get("id")).transform(stores))
                 {
+                    if(lastUpdate+1000 < System.currentTimeMillis()) 
+                    {
+                        lastUpdate = System.currentTimeMillis();
+                        storeText = NumberFormat.getInstance().format(storeCount) + " stores / " + NumberFormat.getInstance().format(index - count) + " sales";
+                        System.out.print(storeText);
+                    }
+                    
                     customers = generateCustomers(selectedProducts.size() / 32);
                     receiptPrefix = Integer.toString(random.nextInt(1000, 10000));
+                    scheduling = new Scheduling(days, store.getInt("id"), employees);
 
-                    for(JSONObject customer : new Customers(customers, this.days, receiptPrefix))
+                    for(JSONObject customer : new Customers(customers, this.days, receiptPrefix, scheduling.getSchedule()))
                     {
                         for(JSONObject sale : new Sale(customer, store, selectedProducts, selectedSkus))
                         {
@@ -156,6 +179,18 @@ public class Sales extends AbstractGenerator
                             cursor.write(sale);
                         }
                     }
+                    
+                    if(lastUpdate+1000 < System.currentTimeMillis()) 
+                    {
+                        for(int i=0; i<storeText.length(); i++) System.out.print("\b");
+                    }
+                    
+                    storeCount++;
+                }
+                
+                if(lastUpdate+1000 >= System.currentTimeMillis()) 
+                {
+                    for(int i=0; i<storeText.length(); i++) System.out.print("\b");
                 }
                 
                 System.out.print(NumberFormat.getInstance().format(franchise.getInt("Stores")) + " stores / ");
@@ -283,13 +318,17 @@ public class Sales extends AbstractGenerator
         private static final long DAY = 1000 * 60 * 60 * 24;
         
         private JSONArray<JSONObject> records;
+        private int start;
 
-        public Customers(int[] customers, int days, String receiptPrefix)
+        public Customers(int[] customers, int days, String receiptPrefix, JSONArray schedule)
         {
             Date base = new Date(new Date().getTime() - (DAY * days));
             Date date;
             
+            JSONArray<JSONObject> today;
             JSONObject record;
+            JSONObject employee;
+            
             int count;
             int receipt = 1000000;
             
@@ -298,6 +337,7 @@ public class Sales extends AbstractGenerator
             for(int day=0; day<days; day++)
             {
                 date = new Date(base.getTime() + (day * DAY));
+                today = schedule.getJSONArray(day);
 
                 for(int hour=0; hour<24; hour++)
                 {
@@ -308,6 +348,10 @@ public class Sales extends AbstractGenerator
                         for(int i=0; i<count; i++)
                         {
                             record = new JSONObject(true);
+                            employee = findEmployee(today, hour, minute);
+
+                            // Sales are lost because staff can't keep up
+                            if(employee == null) break;
 
                             record.put("id", null);
                             record.put("FranchiseId", null);
@@ -317,6 +361,7 @@ public class Sales extends AbstractGenerator
                             record.put("SkuId", null);
                             record.put("DateId", ((date.getYear() + 1900) * 10000) + ((date.getMonth() + 1) * 100) + date.getDate());
                             record.put("TimeId", (hour * 100) + minute);
+                            record.put("CheckoutEmployeeId", employee.get("id"));
                             record.put("Receipt", receiptPrefix + (receipt++));
                             record.put("Quantity", null);
                             record.put("UnitPrice", null);
@@ -330,6 +375,34 @@ public class Sales extends AbstractGenerator
             }
         }
         
+        private JSONObject findEmployee(JSONArray<JSONObject> today, int hour, int minute)
+        {
+            int minutes;
+            int lastHour;
+            int lastMinute;
+            JSONObject employee;
+            
+            for(int i=start; i<today.size(); i++)
+            {
+                employee = today.get(i);
+                minutes = employee.getInt("CheckoutMins");
+                lastHour = employee.getInt("LastHour", hour);
+                lastMinute = employee.getInt("LastMinute", minute-minutes);
+                
+                if(lastMinute+minutes > minute && lastHour == hour) continue;
+                
+                employee.put("LastHour", hour);
+                employee.put("LastMinute", minute);
+                today.add(today.remove(i)); // Move to end of list
+                
+                return employee;
+            }
+            
+            start = 0;
+            
+            return null;
+        }
+        
         @Override
         public Iterator<JSONObject> iterator()
         {
@@ -337,4 +410,89 @@ public class Sales extends AbstractGenerator
         }
     }
     
+    private class Scheduling
+    {
+        private static final long DAY = 1000 * 60 * 60 * 24;
+        
+        private Date base;
+        private int days;
+        private int storeId;
+        private CachedIterable employees;
+
+        public Scheduling(int days, int storeId, CachedIterable employees)
+        {
+            this.base = new Date(new Date().getTime() - (DAY * days));
+            this.days = days;
+            this.storeId = storeId;
+            this.employees = employees;
+        }
+        
+        public CachedIterable getStaffing()
+        {
+            CachedIterable staffing = this.employees.getGroup("StoreId", storeId);
+            Random checkout = new WeightedRandom(getRandom().nextLong(), 0.2); // Only 20% of staff are on checkout
+            Random timeofday = new Random(getRandom().nextLong());
+            Random checkoutTime = new Random(getRandom().nextLong());
+            int offset = 0;
+            
+            JSONArray<Boolean> workdays;
+            JSONArray<Boolean> hours;
+            boolean morning; 
+
+            for(JSONObject employee : staffing)
+            {
+                workdays = new JSONArray<>();
+                hours = new JSONArray<>();
+                morning = timeofday.nextBoolean();
+                
+                for(int workday=0; workday<7; workday++)
+                {
+                    workdays.add((workday != offset && workday != ((offset+1)%7)));
+                }
+                
+                for(int hour=8; hour<20; hour++)
+                {
+                    hours.add((morning && hour < 4) || (!morning && hour >= 12));
+                }
+                
+                employee.put("Checkout", checkout.nextBoolean());
+                employee.put("TimeOfDay", morning ? "morning" : "afternoon");
+                employee.put("Workdays", workdays);
+                employee.put("Hours", hours);
+                employee.put("CheckoutMins", checkoutTime.nextInt(1, 4)); // 1 to 4 minutes to complete checkout
+                
+                offset = (offset+1)%7;
+            }
+            
+            return staffing.getFiltered(new EqualsFilter("Checkout", true));
+        }
+        
+        public JSONArray getSchedule()
+        {
+            CachedIterable staffing = getStaffing();
+            JSONArray schedules = new JSONArray();
+            JSONArray today;
+            Date date;
+            
+            Random leave = new WeightedRandom(getRandom().nextLong(), 0.05); // 5% chance that someone is on leave
+            
+            for(int day=0; day<days; day++)
+            {
+                date = new Date(base.getTime() + (DAY * day));
+                today = new JSONArray();
+                
+                for(JSONObject staff : staffing)
+                {
+                    if(!leave.nextBoolean() && staff.getJSONArray("Workdays").getBoolean(date.getDay()))
+                    {
+                        today.add(staff);
+                    }
+                }
+                
+                schedules.add(today);
+            }
+            
+            return schedules;
+        }
+    }
 }
