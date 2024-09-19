@@ -217,7 +217,7 @@ public class Sales extends AbstractGenerator
         }
         
         @Override
-        public boolean filter(JSONObject record)
+        public boolean test(JSONObject record)
         {
             if(record.getInt("id") < 0) return false;
             if(count >= total) return false;
@@ -247,7 +247,7 @@ public class Sales extends AbstractGenerator
         }
         
         @Override
-        public boolean filter(JSONObject record)
+        public boolean test(JSONObject record)
         {
             return lookup.containsKey(record.getString(key));
         }
