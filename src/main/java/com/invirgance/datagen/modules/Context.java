@@ -111,6 +111,15 @@ public class Context
         return Long.parseLong(value);
     }
     
+    public static boolean getSetting(String key, boolean defautValue)
+    {
+        String value = getSettings().get(key);
+        
+        if(value == null) return defautValue;
+        
+        return Boolean.parseBoolean(value);
+    }
+    
     public static void setSetting(String key, String value)
     {
         getSettings().put(key, value);

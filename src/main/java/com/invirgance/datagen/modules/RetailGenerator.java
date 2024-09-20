@@ -61,7 +61,8 @@ public class RetailGenerator implements Generator
     public void generate() throws IOException
     {
         Random random = new Random(seed);
-        File temp = Files.createTempDirectory("retailgen-").toFile();
+//        File temp = Files.createTempDirectory("retailgen-").toFile();
+        File temp = directory;
         
         String format = Context.getSetting("format", "csv");
         Output output;
@@ -119,7 +120,7 @@ public class RetailGenerator implements Generator
         {
             generator = (AbstractGenerator)Context.get(name);
 
-            generator.getFile().delete();
+            if(Context.getSetting("deletetemp", true)) generator.getFile().delete();
         }
     }
 }

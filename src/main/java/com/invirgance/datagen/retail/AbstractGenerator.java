@@ -26,6 +26,7 @@ import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.output.BSONOutput;
 import com.invirgance.convirgance.output.Output;
 import com.invirgance.convirgance.source.FileSource;
+import com.invirgance.datagen.modules.Context;
 import com.invirgance.datagen.modules.RetailGenerator;
 import java.io.File;
 import java.util.Iterator;
@@ -49,7 +50,10 @@ public abstract class AbstractGenerator implements Iterable<JSONObject>
     {
         this.file = file;
         
-        file.deleteOnExit(); // Important to try and keep temp files clean
+        if(Context.getSetting("deletetemp", true)) 
+        {
+            file.deleteOnExit(); // Important to try and keep temp files clean
+        }
     }
 
     public Random getRandom()
