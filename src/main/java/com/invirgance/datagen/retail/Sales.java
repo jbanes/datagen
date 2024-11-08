@@ -281,8 +281,10 @@ public class Sales extends AbstractGenerator
                 record.put("FranchiseId", store.get("FranchiseId"));
                 record.put("StoreId", store.get("id"));
                 record.put("BrandId", product.get("BrandId"));
+                record.put("CategoryId", product.get("CategoryId"));
                 record.put("ProductId", sku.get("ProductId"));
                 record.put("SkuId", sku.get("id"));
+                record.put("ZipCodeId", ZipCodes.getZipCodeId(store.getString("CountryCode"), store.getInt("ZipCode")));
                 record.put("Quantity", quantity);
                 record.put("UnitPrice", price);
                 record.put("DiscountPrice", price);
@@ -357,10 +359,12 @@ public class Sales extends AbstractGenerator
                             record.put("FranchiseId", null);
                             record.put("StoreId", null);
                             record.put("BrandId", null);
+                            record.put("CategoryId", null);
                             record.put("ProductId", null);
                             record.put("SkuId", null);
                             record.put("DateId", ((date.getYear() + 1900) * 10000) + ((date.getMonth() + 1) * 100) + date.getDate());
                             record.put("TimeId", (hour * 100) + minute);
+                            record.put("ZipCodeId", null);
                             record.put("CheckoutEmployeeId", employee.get("id"));
                             record.put("Receipt", receiptPrefix + (receipt++));
                             record.put("Quantity", null);

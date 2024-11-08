@@ -66,6 +66,19 @@ public class ZipCodes extends AbstractGenerator
         return new DelimitedInput('|').read(new ClasspathSource("/retail/jp-zipcodes.txt"));
     }
     
+    public static int getCountryCode(String code)
+    {
+        if(code.equals("US")) return 0;
+        if(code.equals("JP")) return 1;
+        
+        throw new IllegalArgumentException("Unknown country code: " + code);
+    }
+    
+    public static int getZipCodeId(String country, int zip)
+    {
+        return zip * 100 + getCountryCode(country);
+    }
+    
     public void generate()
     {
         Iterable<JSONObject> unknown = new JSONInput().read(new ClasspathSource("/retail/xx-zipcodes.json"));
@@ -79,7 +92,8 @@ public class ZipCodes extends AbstractGenerator
             @Override
             public JSONObject transform(JSONObject record) throws ConvirganceException
             {
-                record.put("id", index++);
+//                record.put("id", index++);
+                record.put("id", getZipCodeId(record.getString("CountryCode"), record.getInt("ZipCode")));
                 
                 return record;
             }
